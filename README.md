@@ -1,4 +1,4 @@
-# 📘 Documentação Completa da OrionV2 V2
+# 📘 Documentação Completa da OrionV2
 
 Este documento ensina como utilizar **todas as funcionalidades da biblioteca OrionV2** em seus scripts.
 
