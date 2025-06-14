@@ -30,7 +30,7 @@ local Window = ServerUi:MakeWindow({
 local Tab = Window:MakeTab({
 	Name = "Principal",
 	Icon = "rbxassetid://4483345998",
-	RequiredRole = {"User", "Especial"}
+	RequiredRole = "AllRoles"
 })
 
 local Tab2 = Window:MakeTab({
