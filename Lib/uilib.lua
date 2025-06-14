@@ -571,18 +571,22 @@ function OrionV2:MakeWindow(WindowConfig)
 		end	
 	end
 
-	local TabHolder = AddThemeObject(SetChildren(SetProps(MakeElement("ScrollFrame", Color3.fromRGB(255, 255, 255), 4),
-		OrionV2._CurrentTabHolder = TabHolder
+	local TabHolder = SetChildren(SetProps(MakeElement("ScrollFrame", Color3.fromRGB(255, 255, 255), 4), 
 		WindowConfig.SearchBar and {
 			Size = UDim2.new(1, 0, 1, -90),
 			Position = UDim2.new(0, 0, 0, 40)
 		} or {
 			Size = UDim2.new(1, 0, 1, -50)
-		}),
-		{
+		}), {
 			MakeElement("List"),
 			MakeElement("Padding", 8, 0, 0, 8)
-		}), "Divider")
+		}
+	)
+
+	OrionV2._CurrentTabHolder = TabHolder
+
+	AddThemeObject(TabHolder, "Divider")
+
 
 	AddConnection(TabHolder.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
 		TabHolder.CanvasSize = UDim2.new(0, 0, 0, TabHolder.UIListLayout.AbsoluteContentSize.Y + 16)
