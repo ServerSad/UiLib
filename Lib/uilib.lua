@@ -640,7 +640,6 @@ function OrionV2:MakeWindow(WindowConfig)
 			}), "TextDark")
 		}),
 	}), "Second")
-	-- Define o texto do cargo no RoleLabel
 	local roleNameText = "User"
 	for role, val in pairs(OrionV2.Roles) do
 		if OrionV2:HasRole(role) then
@@ -649,10 +648,21 @@ function OrionV2:MakeWindow(WindowConfig)
 		end
 	end
 
-	local roleLabel = WindowStuff:FindFirstChild("RoleLabel", true)
+	-- Busca segura do label
+	local roleLabel
+	for _, v in ipairs(WindowStuff:GetDescendants()) do
+		if v:IsA("TextLabel") and v.Name == "RoleLabel" then
+			roleLabel = v
+			break
+		end
+	end
+
 	if roleLabel then
 		roleLabel.Text = roleNameText
+	else
+		warn("RoleLabel não encontrado!")
 	end
+
 			
 
 	-- @ SearchBar (Zv-yz/github);
