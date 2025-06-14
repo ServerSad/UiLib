@@ -9,10 +9,8 @@ Este documento ensina como utilizar **todas as funcionalidades da biblioteca Ori
 Primeiro, carregue a biblioteca com:
 
 ```lua
-local OrionLib = loadstring(game:HttpGet("https://exemplo.com/minha-lib.lua"))()
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
 ```
-
-Substitua o link pelo URL real do seu GitHub, Pastebin, etc.
 
 ---
 
