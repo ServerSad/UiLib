@@ -1,6 +1,6 @@
-local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
+local ServerUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
 
-OrionV2:MakeRoles({
+ServerUi:MakeRoles({
 	Especial = {
 		Color = "#FFFF00",
 		Users = {11223344, "SeuNome", "NomeDoMeuAmigo"}
@@ -11,7 +11,7 @@ OrionV2:MakeRoles({
 	}
 })
 
-local Window = OrionV2:MakeWindow({
+local Window = ServerUi:MakeWindow({
 	Name = "Interface Completa",
 	SaveConfig = true,
 	ConfigFolder = "ConfigDoPlayer",
@@ -39,7 +39,7 @@ local Tab2 = Window:MakeTab({
 	RequiredRole = "Especial"
 })
 
-OrionV2:MakeNotification({
+ServerUi:MakeNotification({
 	Name = "Bem vindo!",
 	Content = "ss",
 	Time = 3
@@ -59,7 +59,7 @@ Tab:AddToggle({
 Tab:AddButton({
 	Name = "Clique aqui!",
 	Callback = function()
-		OrionV2:MakeNotification({
+		ServerUi:MakeNotification({
 			Name = "Sucesso!",
 			Content = "Você clicou no botão.",
 			Time = 3
@@ -124,4 +124,4 @@ Tab:AddParagraph("Aviso", "Este é um parágrafo com mais texto.\nVocê pode mos
 Tab2:AddLog("Log do sistema iniciado com sucesso.")
 
 -- GUI READY
-OrionV2:Init()
+ServerUi:Init()
