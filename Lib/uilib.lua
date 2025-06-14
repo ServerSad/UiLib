@@ -43,23 +43,33 @@ local OrionV2 = {
 
 OrionV2.Roles = {}
 
-function OrionV2:MakeRole(roleTable)
-	for roleName, value in pairs(roleTable) do
-		if typeof(value) == "string" and value:lower() == "everyone" then
-			OrionV2.Roles[roleName] = "everyone"
-		elseif typeof(value) == "string" or typeof(value) == "number" then
-			if tostring(LocalPlayer.UserId) == tostring(value) or tostring(LocalPlayer.Name) == tostring(value) then
-				OrionV2.Roles[roleName] = value
+function OrionV2:MakeRoles(roleTable)
+	for roleName, roleData in pairs(roleTable) do
+		local users = roleData.Users
+		local color = roleData.Color or "#FFFFFF"
+
+		if typeof(users) == "string" and users:lower() == "everyone" then
+			OrionV2.Roles[roleName] = {
+				Color = color,
+				Users = "everyone"
+			}
+		elseif typeof(users) == "table" then
+			for _, idOrName in ipairs(users) do
+				if tostring(LocalPlayer.UserId) == tostring(idOrName)
+				or tostring(LocalPlayer.Name) == tostring(idOrName) then
+					OrionV2.Roles[roleName] = {
+						Color = color,
+						Users = users
+					}
+				end
 			end
 		end
 	end
 end
 
+
 function OrionV2:HasRole(roleName)
-	local roleValue = OrionV2.Roles[roleName]
-	if roleValue == nil then return false end
-	if roleValue == "everyone" then return true end
-	return tostring(LocalPlayer.UserId) == tostring(roleValue) or tostring(LocalPlayer.Name) == tostring(roleValue)
+	return OrionV2.Roles[roleName] ~= nil
 end
 
 --Feather Icons https://github.com/evoincorp/lucideblox/tree/master/src/modules/util - Created by 7kayoh
@@ -641,14 +651,21 @@ function OrionV2:MakeWindow(WindowConfig)
 		}),
 	}), "Second")
 	local roleNameText = "User"
-	for role, val in pairs(OrionV2.Roles) do
-		if OrionV2:HasRole(role) then
-			roleNameText = role
+	local roleColorHex = "#FFFFFF"
+
+	for roleName, roleData in pairs(OrionV2.Roles) do
+		if OrionV2:HasRole(roleName) then
+			roleNameText = roleName
+			roleColorHex = roleData.Color
 			break
 		end
 	end
 
-	-- Busca segura do label
+	local function HexToColor3(hex)
+		hex = hex:gsub("#", "")
+		return Color3.fromRGB(tonumber("0x" .. hex:sub(1, 2)), tonumber("0x" .. hex:sub(3, 4)), tonumber("0x" .. hex:sub(5, 6)))
+	end
+
 	local roleLabel
 	for _, v in ipairs(WindowStuff:GetDescendants()) do
 		if v:IsA("TextLabel") and v.Name == "RoleLabel" then
@@ -659,9 +676,9 @@ function OrionV2:MakeWindow(WindowConfig)
 
 	if roleLabel then
 		roleLabel.Text = roleNameText
-	else
-		warn("RoleLabel não encontrado!")
+		roleLabel.TextColor3 = HexToColor3(roleColorHex)
 	end
+
 
 			
 
