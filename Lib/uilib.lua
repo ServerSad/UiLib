@@ -44,33 +44,27 @@ local OrionV2 = {
 OrionV2.Roles = {}
 
 function OrionV2:MakeRoles(roleTable)
-	local roleAssigned = false
+	local assignedRole = nil
+
 	for roleName, roleData in pairs(roleTable) do
-		if roleAssigned then break end -- só atribui o primeiro role compatível
+		if assignedRole then break end
 
 		local users = roleData.Users
 		local color = roleData.Color or "#FFFFFF"
 
 		if typeof(users) == "string" and users:lower() == "everyone" then
-			OrionV2.Roles[roleName] = {
-				Color = color,
-				Users = "everyone"
-			}
-			roleAssigned = true
+			assignedRole = { Name = roleName, Color = color }
 		elseif typeof(users) == "table" then
 			for _, idOrName in ipairs(users) do
 				if tostring(LocalPlayer.UserId) == tostring(idOrName)
 				or tostring(LocalPlayer.Name) == tostring(idOrName) then
-					OrionV2.Roles[roleName] = {
-						Color = color,
-						Users = users
-					}
-					roleAssigned = true
+					assignedRole = { Name = roleName, Color = color }
 					break
 				end
 			end
 		end
 	end
+	OrionV2.CurrentRole = assignedRole or { Name = "User", Color = "#FFFFFF" }
 end
 
 
@@ -659,13 +653,9 @@ function OrionV2:MakeWindow(WindowConfig)
 	local roleNameText = "User"
 	local roleColorHex = "#FFFFFF"
 
-	for roleName, roleData in pairs(OrionV2.Roles) do
-		if OrionV2:HasRole(roleName) then
-			roleNameText = roleName
-			roleColorHex = roleData.Color
-			break
-		end
-	end
+	local roleNameText = OrionV2.CurrentRole.Name
+	local roleColorHex = OrionV2.CurrentRole.Color
+
 
 	local function HexToColor3(hex)
 		hex = hex:gsub("#", "")
