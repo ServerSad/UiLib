@@ -1,14 +1,14 @@
 
-# 📘 Documentação Oficial — OrionV2 UI Library
+# 📘 Documentação Oficial — ServerUi UI Library
 
-Esta documentação ensina como utilizar **todas as funcionalidades da biblioteca OrionV2** para criar GUIs completas e organizadas.
+Esta documentação ensina como utilizar **todas as funcionalidades da biblioteca ServerUi** para criar GUIs completas e organizadas.
 
 ---
 
 ## 📦 Importando a biblioteca
 
 ```lua
-local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
+local ServerUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
 ```
 
 ---
@@ -16,7 +16,7 @@ local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/Serve
 ## 👥 Sistema de Cargos (Roles)
 
 ```lua
-OrionV2:MakeRoles({
+ServerUi:MakeRoles({
     Especial = {
         Color = "#FFFF00",
         Users = {11223344, "SeuNome", "NomeDoMeuAmigo"}
@@ -39,7 +39,7 @@ OrionV2:MakeRoles({
 ## 🪟 Criando a Janela Principal
 
 ```lua
-local Window = OrionV2:MakeWindow({
+local Window = ServerUi:MakeWindow({
     Name = "Título da GUI",
     SaveConfig = true,
     ConfigFolder = "NomeDaPasta",
@@ -210,7 +210,7 @@ Tab:AddLog("Sistema iniciado com sucesso.")
 ## 🔔 Notificação (Popup)
 
 ```lua
-OrionV2:MakeNotification({
+ServerUi:MakeNotification({
     Name = "Título",
     Content = "Mensagem de conteúdo",
     Time = 3
@@ -224,7 +224,7 @@ OrionV2:MakeNotification({
 Se você definiu `SaveConfig = true`, basta rodar:
 
 ```lua
-OrionV2:Init()
+ServerUi:Init()
 ```
 
 As configurações serão carregadas automaticamente nos próximos usos.
@@ -236,13 +236,13 @@ As configurações serão carregadas automaticamente nos próximos usos.
 **Leitura:**
 
 ```lua
-local valor = OrionV2.Flags["meuToggle"].Value
+local valor = ServerUi.Flags["meuToggle"].Value
 ```
 
 **Alterar manualmente:**
 
 ```lua
-OrionV2.Flags["sliderVolume"]:Set(75)
+ServerUi.Flags["sliderVolume"]:Set(75)
 ```
 
 ---
