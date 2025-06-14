@@ -669,8 +669,13 @@ function OrionV2:MakeWindow(WindowConfig)
 
 	local function HexToColor3(hex)
 		hex = hex:gsub("#", "")
-		return Color3.fromRGB(tonumber("0x" .. hex:sub(1, 2)), tonumber("0x" .. hex:sub(3, 4)), tonumber("0x" .. hex:sub(5, 6)))
+		return Color3.fromRGB(
+			tonumber("0x" .. hex:sub(1, 2)),
+			tonumber("0x" .. hex:sub(3, 4)),
+			tonumber("0x" .. hex:sub(5, 6))
+		)
 	end
+
 
 	local roleLabel
 	for _, v in ipairs(WindowStuff:GetDescendants()) do
