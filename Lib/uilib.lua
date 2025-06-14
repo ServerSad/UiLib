@@ -846,6 +846,12 @@ function OrionV2:MakeWindow(WindowConfig)
 		TabConfig.Name = TabConfig.Name or "Tab"
 		TabConfig.Icon = TabConfig.Icon or ""
 
+		if TabConfig.RequiredRole then
+			if not OrionV2:HasRole(TabConfig.RequiredRole) then
+				return 
+			end
+		end
+
 		local TabFrame = SetChildren(SetProps(MakeElement("Button"), {
 			Size = UDim2.new(1, 0, 0, 30),
 			Parent = TabHolder
@@ -867,12 +873,6 @@ function OrionV2:MakeWindow(WindowConfig)
 		})
 
 		AddItemTable(Tabs, TabConfig.Name, TabFrame)
-
-		if TabConfig.RequiredRole then
-			if not OrionV2:HasRole(TabConfig.RequiredRole) then
-				return 
-			end
-		end
 
 
 		if GetIcon(TabConfig.Icon) ~= nil then
