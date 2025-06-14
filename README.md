@@ -33,7 +33,6 @@ OrionV2:MakeRoles({
 - `Color`: Cor em hexadecimal do cargo e do nome da pessoa que você quer deixar.
 - `Users`: Usuarios que vão ter acesso ao cargo.
 - `everyone`: São todos que executam a script ou seja o cargo inicial.
----
 
 ---
 
