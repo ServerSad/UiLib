@@ -1,6 +1,6 @@
-# 📘 Documentação Completa da OrionLib V2
+# 📘 Documentação Completa da OrionV2 V2
 
-Este documento ensina como utilizar **todas as funcionalidades da biblioteca OrionLib** em scripts de interface gráfica no Roblox.
+Este documento ensina como utilizar **todas as funcionalidades da biblioteca OrionV2** em scripts de interface gráfica no Roblox.
 
 ---
 
@@ -9,7 +9,7 @@ Este documento ensina como utilizar **todas as funcionalidades da biblioteca Ori
 Primeiro, carregue a biblioteca com:
 
 ```lua
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
+local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
 ```
 
 ---
@@ -17,7 +17,7 @@ local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Serv
 ## 🪟 Criando a Janela Principal
 
 ```lua
-local Window = OrionLib:MakeWindow({
+local Window = OrionV2:MakeWindow({
 	Name = "Título da GUI",
 	SaveConfig = true,
 	ConfigFolder = "NomeDaPasta",
@@ -179,7 +179,7 @@ Tab:AddLog("Sistema iniciado com sucesso.")
 ## 🔔 Notificação (popup)
 
 ```lua
-OrionLib:MakeNotification({
+OrionV2:MakeNotification({
 	Name = "Título",
 	Content = "Mensagem de conteúdo",
 	Time = 3
@@ -193,7 +193,7 @@ OrionLib:MakeNotification({
 Se você ativou `SaveConfig = true`, tudo será salvo automaticamente com:
 
 ```lua
-OrionLib:Init()
+OrionV2:Init()
 ```
 
 ---
@@ -203,13 +203,13 @@ OrionLib:Init()
 Você pode acessar valores com:
 
 ```lua
-local valor = OrionLib.Flags["meuToggle"].Value
+local valor = OrionV2.Flags["meuToggle"].Value
 ```
 
 E pode forçar mudanças com:
 
 ```lua
-OrionLib.Flags["sliderVolume"]:Set(75)
+OrionV2.Flags["sliderVolume"]:Set(75)
 ```
 
 ---
