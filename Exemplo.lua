@@ -1,9 +1,20 @@
-local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))() -- Substitua pelo link real
+local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
+
+OrionV2:MakeRoles({
+	Especial = {
+		Color = "#FFFF00",
+		Users = {11223344, "SeuNome", "NomeDoMeuAmigo"}
+	},
+	User = {
+		Color = "#00FF00",
+		Users = "everyone"
+	}
+})
 
 local Window = OrionV2:MakeWindow({
-	Name = "Exemplo",
+	Name = "Interface Completa",
 	SaveConfig = true,
-	ConfigFolder = "ConfigDoExemplo",
+	ConfigFolder = "ConfigDoPlayer",
 	IntroText = "Carregando sua GUI...",
 	IntroEnabled = true,
 	ShowIcon = true,
@@ -18,23 +29,20 @@ local Window = OrionV2:MakeWindow({
 -- TAB PRINCIPAL
 local Tab = Window:MakeTab({
 	Name = "Principal",
-	Icon = "rbxassetid://4483345998"
-})
-local Tab2 = Window:MakeTab({
-	Name = "Logs",
-	Icon = "rbxassetid://4483345998"
+	Icon = "rbxassetid://4483345998",
+	RequiredRole = {"User", "Especial"}
 })
 
--- BOTÃO
-Tab:AddButton({
-	Name = "Clique aqui!",
-	Callback = function()
-		OrionLib:MakeNotification({
-			Name = "Sucesso!",
-			Content = "Você clicou no botão.",
-			Time = 3
-		})
-	end
+local Tab2 = Window:MakeTab({
+	Name = "Tab Especial",
+	Icon = "rbxassetid://4483345998",
+	RequiredRole = "Especial"
+})
+
+OrionV2:MakeNotification({
+	Name = "Bem vindo!",
+	Content = "ss",
+	Time = 3
 })
 
 -- TOGGLE
@@ -45,6 +53,17 @@ Tab:AddToggle({
 	Save = true,
 	Callback = function(state)
 		print("Modo Hardcore está:", state)
+	end
+})
+
+Tab:AddButton({
+	Name = "Clique aqui!",
+	Callback = function()
+		OrionV2:MakeNotification({
+			Name = "Sucesso!",
+			Content = "Você clicou no botão.",
+			Time = 3
+		})
 	end
 })
 
@@ -105,4 +124,4 @@ Tab:AddParagraph("Aviso", "Este é um parágrafo com mais texto.\nVocê pode mos
 Tab2:AddLog("Log do sistema iniciado com sucesso.")
 
 -- GUI READY
-OrionLib:Init()
+OrionV2:Init()
