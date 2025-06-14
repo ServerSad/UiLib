@@ -41,21 +41,6 @@ local OrionV2 = {
 	SaveCfg = false
 }
 
-function OrionV2:AddTabSection(SectionName)
-	local SectionLabel = AddThemeObject(SetProps(MakeElement("Label", SectionName, 14), {
-		Size = UDim2.new(1, -20, 0, 20),
-		Position = UDim2.new(0, 0, 0, 0),
-		Font = Enum.Font.GothamBold,
-		TextTransparency = 0.2,
-		TextXAlignment = Enum.TextXAlignment.Left
-	}), "Text")
-
-	if OrionV2._CurrentTabHolder then
-		SectionLabel.Parent = OrionV2._CurrentTabHolder
-	end
-end
-
-
 OrionV2.Roles = {}
 
 function OrionV2:MakeRoles(roleTable)
@@ -571,9 +556,8 @@ function OrionV2:MakeWindow(WindowConfig)
 		end	
 	end
 
-	local TabHolder = SetChildren
-OrionV2._CurrentTabHolder = TabHolder(SetProps(MakeElement("ScrollFrame", Color3.fromRGB(255, 255, 255), 4),
-				WindowConfig.SearchBar and {
+	local TabHolder = AddThemeObject(SetChildren(SetProps(MakeElement("ScrollFrame", Color3.fromRGB(255, 255, 255), 4),
+		WindowConfig.SearchBar and {
 			Size = UDim2.new(1, 0, 1, -90),
 			Position = UDim2.new(0, 0, 0, 40)
 		} or {
@@ -918,19 +902,7 @@ OrionV2._CurrentTabHolder = TabHolder(SetProps(MakeElement("ScrollFrame", Color3
 
 	local Functions = {}
 
-	
-        function Functions:AddTabSection(SectionName)
-            local SectionLabel = AddThemeObject(SetProps(MakeElement("Label", SectionName, 14), {
-                Size = UDim2.new(1, -20, 0, 20),
-                Position = UDim2.new(0, 0, 0, 0),
-                Font = Enum.Font.GothamBold,
-                TextTransparency = 0.2,
-                TextXAlignment = Enum.TextXAlignment.Left
-            }), "Text")
-            SectionLabel.Parent = TabHolder
-        end
-
-		function Functions:MakeTab(TabConfig)
+	function Functions:MakeTab(TabConfig)
 		TabConfig = TabConfig or {}
 		TabConfig.Name = TabConfig.Name or "Tab"
 		TabConfig.Icon = TabConfig.Icon or ""
@@ -950,7 +922,7 @@ OrionV2._CurrentTabHolder = TabHolder(SetProps(MakeElement("ScrollFrame", Color3
 				hasAccess = OrionV2:HasRole(required)
 			end
 
-			if not hasAccess and TabConfig.RequiredRole ~= "AllRoles" then
+			if not hasAccess then
 				return
 			end
 		end
