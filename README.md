@@ -3,6 +3,9 @@
 
 Esta documentação ensina como utilizar **todas as funcionalidades da biblioteca ServerUi** para criar GUIs completas e organizadas.
 
+## Suporte a icones lucideblox:
+[Clique aqui para ver os icones](https://raw.githubusercontent.com/frappedevs/lucideblox/refs/heads/master/src/modules/util/icons.json)
+
 ---
 
 ## 📦 Importando a biblioteca
