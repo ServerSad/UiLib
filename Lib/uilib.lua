@@ -22,7 +22,7 @@ local PARENT = game:GetService("CoreGui")
 	or gethui and gethui()
 	or game:GetService("CoreGui")--]]
 
-local OrionV2 = {
+local ServerUi = {
 	Elements = {},
 	ThemeObjects = {},
 	Connections = {},
@@ -43,9 +43,9 @@ local OrionV2 = {
 	SaveCfg = false
 }
 
-OrionV2.Roles = {}
+ServerUi.Roles = {}
 
-function OrionV2:MakeRoles(roleTable)
+function ServerUi:MakeRoles(roleTable)
 	local current = nil
 	for roleName, roleData in pairs(roleTable) do
 		local users = roleData.Users
@@ -73,10 +73,10 @@ function OrionV2:MakeRoles(roleTable)
 	end
 
 	-- Armazena a role ativa e também seu nome para comparação
-	OrionV2.CurrentRole = current or {Name = "User", Color = "#FFFFFF"}
+	ServerUi.CurrentRole = current or {Name = "User", Color = "#FFFFFF"}
 end
 
-function OrionV2:HasRole(roleName)
+function ServerUi:HasRole(roleName)
 	return self.CurrentRole and self.CurrentRole.Name == roleName
 end
 
@@ -110,25 +110,25 @@ for _, Interface in ipairs(PARENT:GetChildren()) do
 	end
 end
 
-function OrionV2:IsRunning()
+function ServerUi:IsRunning()
 	return Orion.Parent == PARENT
 end
 
 local function AddConnection(Signal, Function)
-	if (not OrionV2:IsRunning()) then
+	if (not ServerUi:IsRunning()) then
 		return
 	end
 	local SignalConnect = Signal:Connect(Function)
-	table.insert(OrionV2.Connections, SignalConnect)
+	table.insert(ServerUi.Connections, SignalConnect)
 	return SignalConnect
 end
 
 task.spawn(function()
-	while (OrionV2:IsRunning()) do
+	while (ServerUi:IsRunning()) do
 		wait()
 	end
 
-	for _, Connection in next, OrionV2.Connections do
+	for _, Connection in next, ServerUi.Connections do
 		Connection:Disconnect()
 	end
 end)
@@ -176,7 +176,7 @@ local function Create(Name, Properties, Children)
 end
 
 local function CreateElement(ElementName, ElementFunction)
-	OrionV2.Elements[ElementName] = function(...)
+	ServerUi.Elements[ElementName] = function(...)
 		return ElementFunction(...)
 	end
 end
@@ -195,7 +195,7 @@ end
 
 
 local function MakeElement(ElementName, ...)
-	local NewElement = OrionV2.Elements[ElementName](...)
+	local NewElement = ServerUi.Elements[ElementName](...)
 	return NewElement
 end
 
@@ -246,21 +246,21 @@ local function ReturnProperty(Object)
 end
 
 local function AddThemeObject(Object, Type)
-	if not OrionV2.ThemeObjects[Type] then
-		OrionV2.ThemeObjects[Type] = {}
+	if not ServerUi.ThemeObjects[Type] then
+		ServerUi.ThemeObjects[Type] = {}
 	end    
 	Total.AddThemeObject += 1;
 	--print(Object, Type)
 	--print(`[{Total.AddThemeObject}] Added on "AddThemeObject": {Object}, {Type}`)
-	table.insert(OrionV2.ThemeObjects[Type], Object)
-	Object[ReturnProperty(Object)] = OrionV2.Themes[OrionV2.SelectedTheme][Type]
+	table.insert(ServerUi.ThemeObjects[Type], Object)
+	Object[ReturnProperty(Object)] = ServerUi.Themes[ServerUi.SelectedTheme][Type]
 	return Object
 end    
 
 local function SetTheme()
-	for Name, Type in pairs(OrionV2.ThemeObjects) do
+	for Name, Type in pairs(ServerUi.ThemeObjects) do
 		for _, Object in pairs(Type) do
-			Object[ReturnProperty(Object)] = OrionV2.Themes[OrionV2.SelectedTheme][Name]
+			Object[ReturnProperty(Object)] = ServerUi.Themes[ServerUi.SelectedTheme][Name]
 		end    
 	end    
 end
@@ -276,12 +276,12 @@ end
 local function LoadCfg(Config)
 	local Data = HttpService:JSONDecode(Config)
 	table.foreach(Data, function(a,b)
-		if OrionV2.Flags[a] then
+		if ServerUi.Flags[a] then
 			spawn(function() 
-				if OrionV2.Flags[a].Type == "Colorpicker" then
-					OrionV2.Flags[a]:Set(UnpackColor(b))
+				if ServerUi.Flags[a].Type == "Colorpicker" then
+					ServerUi.Flags[a]:Set(UnpackColor(b))
 				else
-					OrionV2.Flags[a]:Set(b)
+					ServerUi.Flags[a]:Set(b)
 				end    
 			end)
 		else
@@ -292,7 +292,7 @@ end
 
 local function SaveCfg(Name)
 	local Data = {}
-	for i,v in pairs(OrionV2.Flags) do
+	for i,v in pairs(ServerUi.Flags) do
 		if v.Save then
 			if v.Type == "Colorpicker" then
 				Data[i] = PackColor(v.Value)
@@ -303,7 +303,7 @@ local function SaveCfg(Name)
 	end
 
 	if writefile then
-		writefile(OrionV2.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
+		writefile(ServerUi.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
 	end
 end
 
@@ -451,7 +451,7 @@ local NotificationHolder = SetProps(SetChildren(MakeElement("TFrame"), {
 	Parent = Orion
 })
 
-function OrionV2:MakeNotification(NotificationConfig)
+function ServerUi:MakeNotification(NotificationConfig)
 	spawn(function()
 		NotificationConfig.Name = NotificationConfig.Name or "Notification"
 		NotificationConfig.Content = NotificationConfig.Content or "Test"
@@ -513,12 +513,12 @@ function OrionV2:MakeNotification(NotificationConfig)
 	end)
 end    
 
-function OrionV2:Init()
-	if OrionV2.SaveCfg and (isfile and readfile) then	
+function ServerUi:Init()
+	if ServerUi.SaveCfg and (isfile and readfile) then	
 		pcall(function()
-			if isfile(OrionV2.Folder .. "/" .. game.GameId .. ".txt") then
-				LoadCfg(readfile(OrionV2.Folder .. "/" .. game.GameId .. ".txt"))
-				OrionV2:MakeNotification({
+			if isfile(ServerUi.Folder .. "/" .. game.GameId .. ".txt") then
+				LoadCfg(readfile(ServerUi.Folder .. "/" .. game.GameId .. ".txt"))
+				ServerUi:MakeNotification({
 					Name = "Configuration",
 					Content = "Auto-loaded configuration for the game " .. game.GameId .. ".",
 					Time = 5
@@ -528,7 +528,7 @@ function OrionV2:Init()
 	end	
 end	
 
-function OrionV2:MakeWindow(WindowConfig)
+function ServerUi:MakeWindow(WindowConfig)
 	local FirstTab = true
 	local Minimized = false
 	local Loaded = false
@@ -549,8 +549,8 @@ function OrionV2:MakeWindow(WindowConfig)
 	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://14229447778"
 	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://14229447778"
 	WindowConfig.SearchBar = WindowConfig.SearchBar or nil
-	OrionV2.Folder = WindowConfig.ConfigFolder
-	OrionV2.SaveCfg = WindowConfig.SaveConfig
+	ServerUi.Folder = WindowConfig.ConfigFolder
+	ServerUi.SaveCfg = WindowConfig.SaveConfig
 
 	if WindowConfig.SaveConfig then
 		if (isfolder and makefolder) and not isfolder(WindowConfig.ConfigFolder) then
@@ -662,8 +662,8 @@ function OrionV2:MakeWindow(WindowConfig)
 	local roleNameText = "User"
 	local roleColorHex = "#FFFFFF"
 
-	local roleNameText = OrionV2.CurrentRole.Name
-	local roleColorHex = OrionV2.CurrentRole.Color
+	local roleNameText = ServerUi.CurrentRole.Name
+	local roleColorHex = ServerUi.CurrentRole.Color
 
 
 	local function HexToColor3(hex)
@@ -830,7 +830,7 @@ function OrionV2:MakeWindow(WindowConfig)
 			MobileIcon.Visible = true;
 		end
 
-		OrionV2:MakeNotification({
+		ServerUi:MakeNotification({
 			Name = "Interface fechada",
 			Content = (isMobile and 'Clique na <b>Icon' or 'Pressione a tecla <b>' .. _currentKey.Name) .. "</b> para abrir a GUI novamente!",
 			Time = 5
@@ -917,13 +917,13 @@ function OrionV2:MakeWindow(WindowConfig)
         hasAccess = true
     elseif typeof(required) == "table" then
         for _, role in ipairs(required) do
-            if OrionV2:HasRole(role) then
+            if ServerUi:HasRole(role) then
                 hasAccess = true
                 break
             end
         end
     else
-        hasAccess = OrionV2:HasRole(required)
+        hasAccess = ServerUi:HasRole(required)
     end
 
     if not hasAccess then
@@ -1133,28 +1133,28 @@ function OrionV2:MakeWindow(WindowConfig)
 				}), "Second")
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionV2.Themes[OrionV2.SelectedTheme].Second}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ServerUi.Themes[ServerUi.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 					spawn(function()
 						ButtonConfig.Callback()
 					end)
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				--@ Favorite System
 				if FavoriteButton then
 					AddConnection(FavoriteButton.MouseButton1Down, function()
-						OrionV2.FavoriteEvent:Fire(ButtonConfig.OriginalName)
+						ServerUi.FavoriteEvent:Fire(ButtonConfig.OriginalName)
 					end)
 				end
 
@@ -1217,8 +1217,8 @@ function OrionV2:MakeWindow(WindowConfig)
 
 				function Toggle:Set(Value)
 					Toggle.Value = Value
-					TweenService:Create(ToggleBox, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Toggle.Value and ToggleConfig.Color or OrionV2.Themes.Default.Divider}):Play()
-					TweenService:Create(ToggleBox.Stroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Color = Toggle.Value and ToggleConfig.Color or OrionV2.Themes.Default.Stroke}):Play()
+					TweenService:Create(ToggleBox, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Toggle.Value and ToggleConfig.Color or ServerUi.Themes.Default.Divider}):Play()
+					TweenService:Create(ToggleBox.Stroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Color = Toggle.Value and ToggleConfig.Color or ServerUi.Themes.Default.Stroke}):Play()
 					TweenService:Create(ToggleBox.Ico, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = Toggle.Value and 0 or 1, Size = Toggle.Value and UDim2.new(0, 20, 0, 20) or UDim2.new(0, 8, 0, 8)}):Play()
 					ToggleConfig.Callback(Toggle.Value)
 				end    
@@ -1226,25 +1226,25 @@ function OrionV2:MakeWindow(WindowConfig)
 				Toggle:Set(Toggle.Value)
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionV2.Themes[OrionV2.SelectedTheme].Second}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ServerUi.Themes[ServerUi.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 					SaveCfg(game.GameId)
 					Toggle:Set(not Toggle.Value)
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				if ToggleConfig.Flag then
-					OrionV2.Flags[ToggleConfig.Flag] = Toggle
+					ServerUi.Flags[ToggleConfig.Flag] = Toggle
 				end	
 				return Toggle
 			end  
@@ -1339,7 +1339,7 @@ function OrionV2:MakeWindow(WindowConfig)
 
 				Slider:Set(Slider.Value)
 				if SliderConfig.Flag then				
-					OrionV2.Flags[SliderConfig.Flag] = Slider
+					ServerUi.Flags[SliderConfig.Flag] = Slider
 				end
 				return Slider
 			end  
@@ -1494,7 +1494,7 @@ function OrionV2:MakeWindow(WindowConfig)
 				Dropdown:Refresh(Dropdown.Options, false)
 				Dropdown:Set(Dropdown.Value)
 				if DropdownConfig.Flag then				
-					OrionV2.Flags[DropdownConfig.Flag] = Dropdown
+					ServerUi.Flags[DropdownConfig.Flag] = Dropdown
 				end
 				return Dropdown
 			end
@@ -1592,19 +1592,19 @@ function OrionV2:MakeWindow(WindowConfig)
 				end)
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionV2.Themes[OrionV2.SelectedTheme].Second}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ServerUi.Themes[ServerUi.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				function Bind:Set(Key)
@@ -1616,7 +1616,7 @@ function OrionV2:MakeWindow(WindowConfig)
 
 				Bind:Set(BindConfig.Default)
 				if BindConfig.Flag then				
-					OrionV2.Flags[BindConfig.Flag] = Bind
+					ServerUi.Flags[BindConfig.Flag] = Bind
 				end
 				return Bind
 			end  
@@ -1683,20 +1683,20 @@ function OrionV2:MakeWindow(WindowConfig)
 				TextboxActual.Text = TextboxConfig.Default
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = OrionV2.Themes[OrionV2.SelectedTheme].Second}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = ServerUi.Themes[ServerUi.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 3, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 3, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 3)}):Play()
 					TextboxActual:CaptureFocus()
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionV2.Themes[OrionV2.SelectedTheme].Second.R * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.G * 255 + 6, OrionV2.Themes[OrionV2.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 			end 
 			function ElementFunction:AddColorpicker(ColorpickerConfig)
@@ -1880,7 +1880,7 @@ function OrionV2:MakeWindow(WindowConfig)
 
 				Colorpicker:Set(Colorpicker.Value)
 				if ColorpickerConfig.Flag then				
-					OrionV2.Flags[ColorpickerConfig.Flag] = Colorpicker
+					ServerUi.Flags[ColorpickerConfig.Flag] = Colorpicker
 				end
 				return Colorpicker
 			end  
@@ -1935,7 +1935,7 @@ function OrionV2:MakeWindow(WindowConfig)
 	end;
 
 	function Functions:Destroy()
-		for _, Connection in next, OrionV2.Connections do
+		for _, Connection in next, ServerUi.Connections do
 			Connection:Disconnect()
 		end
 		MainWindow:Destroy()
@@ -1945,8 +1945,8 @@ function OrionV2:MakeWindow(WindowConfig)
 	return Functions;
 end   
 
-function OrionV2:Destroy()
+function ServerUi:Destroy()
 	Orion:Destroy()
 end
 
-return OrionV2
+return ServerUi
