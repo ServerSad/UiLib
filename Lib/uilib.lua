@@ -41,6 +41,21 @@ local OrionV2 = {
 	SaveCfg = false
 }
 
+function OrionV2:AddTabSection(SectionName)
+	local SectionLabel = AddThemeObject(SetProps(MakeElement("Label", SectionName, 14), {
+		Size = UDim2.new(1, -20, 0, 20),
+		Position = UDim2.new(0, 0, 0, 0),
+		Font = Enum.Font.GothamBold,
+		TextTransparency = 0.2,
+		TextXAlignment = Enum.TextXAlignment.Left
+	}), "Text")
+
+	if OrionV2._CurrentTabHolder then
+		SectionLabel.Parent = OrionV2._CurrentTabHolder
+	end
+end
+
+
 OrionV2.Roles = {}
 
 function OrionV2:MakeRoles(roleTable)
@@ -557,6 +572,7 @@ function OrionV2:MakeWindow(WindowConfig)
 	end
 
 	local TabHolder = AddThemeObject(SetChildren(SetProps(MakeElement("ScrollFrame", Color3.fromRGB(255, 255, 255), 4),
+		OrionV2._CurrentTabHolder = TabHolder
 		WindowConfig.SearchBar and {
 			Size = UDim2.new(1, 0, 1, -90),
 			Position = UDim2.new(0, 0, 0, 40)
