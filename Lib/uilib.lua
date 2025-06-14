@@ -44,40 +44,34 @@ local OrionV2 = {
 OrionV2.Roles = {}
 
 function OrionV2:MakeRoles(roleTable)
-	local rolePriority = {}
-	for roleName, _ in pairs(roleTable) do
-		table.insert(rolePriority, roleName)
-	end
+	local roleAssigned = false
+	for roleName, roleData in pairs(roleTable) do
+		if roleAssigned then break end -- só atribui o primeiro role compatível
 
-	for _, roleName in ipairs(rolePriority) do
-		local roleData = roleTable[roleName]
 		local users = roleData.Users
 		local color = roleData.Color or "#FFFFFF"
 
-		if OrionV2.Roles._RoleAssigned then break end
-
 		if typeof(users) == "string" and users:lower() == "everyone" then
-			OrionV2.Roles._RoleAssigned = true
 			OrionV2.Roles[roleName] = {
 				Color = color,
 				Users = "everyone"
 			}
+			roleAssigned = true
 		elseif typeof(users) == "table" then
 			for _, idOrName in ipairs(users) do
 				if tostring(LocalPlayer.UserId) == tostring(idOrName)
 				or tostring(LocalPlayer.Name) == tostring(idOrName) then
-					OrionV2.Roles._RoleAssigned = true
 					OrionV2.Roles[roleName] = {
 						Color = color,
 						Users = users
 					}
+					roleAssigned = true
 					break
 				end
 			end
 		end
 	end
 end
-
 
 
 function OrionV2:HasRole(roleName)
