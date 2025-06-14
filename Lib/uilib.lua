@@ -44,33 +44,40 @@ local OrionV2 = {
 OrionV2.Roles = {}
 
 function OrionV2:MakeRoles(roleTable)
-	local assignedRole = nil
-
+	local current = nil
 	for roleName, roleData in pairs(roleTable) do
-		if assignedRole then break end
-
 		local users = roleData.Users
 		local color = roleData.Color or "#FFFFFF"
 
-		if typeof(users) == "string" and users:lower() == "everyone" then
-			assignedRole = { Name = roleName, Color = color }
-		elseif typeof(users) == "table" then
+		if typeof(users) == "table" then
 			for _, idOrName in ipairs(users) do
 				if tostring(LocalPlayer.UserId) == tostring(idOrName)
 				or tostring(LocalPlayer.Name) == tostring(idOrName) then
-					assignedRole = { Name = roleName, Color = color }
+					current = {
+						Name = roleName,
+						Color = color
+					}
 					break
 				end
 			end
+		elseif typeof(users) == "string" and users:lower() == "everyone" then
+			if not current then  -- só usa "everyone" se nenhuma anterior foi atribuída
+				current = {
+					Name = roleName,
+					Color = color
+				}
+			end
 		end
 	end
-	OrionV2.CurrentRole = assignedRole or { Name = "User", Color = "#FFFFFF" }
-end
 
+	-- Armazena a role ativa e também seu nome para comparação
+	OrionV2.CurrentRole = current or {Name = "User", Color = "#FFFFFF"}
+end
 
 function OrionV2:HasRole(roleName)
-	return OrionV2.Roles[roleName] ~= nil
+	return self.CurrentRole and self.CurrentRole.Name == roleName
 end
+
 
 --Feather Icons https://github.com/evoincorp/lucideblox/tree/master/src/modules/util - Created by 7kayoh
 local Icons = {}
