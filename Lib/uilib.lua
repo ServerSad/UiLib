@@ -908,23 +908,26 @@ function OrionV2:MakeWindow(WindowConfig)
 		TabConfig.Icon = TabConfig.Icon or ""
 
 		if TabConfig.RequiredRole then
-			local required = TabConfig.RequiredRole
-			local hasAccess = false
+    local required = TabConfig.RequiredRole
+    local hasAccess = false
 
-			if typeof(required) == "table" then
-				for _, role in ipairs(required) do
-					if OrionV2:HasRole(role) then
-						hasAccess = true
-						break
-					end
-				end
-			else
-				hasAccess = OrionV2:HasRole(required)
-			end
+    if required == "AllRoles" then
+        hasAccess = true
+    elseif typeof(required) == "table" then
+        for _, role in ipairs(required) do
+            if OrionV2:HasRole(role) then
+                hasAccess = true
+                break
+            end
+        end
+    else
+        hasAccess = OrionV2:HasRole(required)
+    end
 
-			if not hasAccess then
-				return
-			end
+    if not hasAccess then
+        return
+    end
+
 		end
 
 
