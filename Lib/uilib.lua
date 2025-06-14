@@ -889,10 +889,25 @@ function OrionV2:MakeWindow(WindowConfig)
 		TabConfig.Icon = TabConfig.Icon or ""
 
 		if TabConfig.RequiredRole then
-			if not OrionV2:HasRole(TabConfig.RequiredRole) then
-				return 
+			local required = TabConfig.RequiredRole
+			local hasAccess = false
+
+			if typeof(required) == "table" then
+				for _, role in ipairs(required) do
+					if OrionV2:HasRole(role) then
+						hasAccess = true
+						break
+					end
+				end
+			else
+				hasAccess = OrionV2:HasRole(required)
+			end
+
+			if not hasAccess then
+				return
 			end
 		end
+
 
 		local TabFrame = SetChildren(SetProps(MakeElement("Button"), {
 			Size = UDim2.new(1, 0, 0, 30),
