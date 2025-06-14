@@ -14,6 +14,28 @@ local TemporaryRoles = {
 	[3357713444] = "Developer"
 }
 
+OrionV2.Roles = {}
+
+function OrionV2:MakeRole(roleTable)
+	for roleName, value in pairs(roleTable) do
+		if typeof(value) == "string" and value:lower() == "everyone" then
+			OrionV2.Roles[roleName] = "everyone"
+		elseif typeof(value) == "string" or typeof(value) == "number" then
+			if tostring(LocalPlayer.UserId) == tostring(value) or tostring(LocalPlayer.Name) == tostring(value) then
+				OrionV2.Roles[roleName] = value
+			end
+		end
+	end
+end
+
+function OrionV2:HasRole(roleName)
+	local roleValue = OrionV2.Roles[roleName]
+	if roleValue == nil then return false end
+	if roleValue == "everyone" then return true end
+	return tostring(LocalPlayer.UserId) == tostring(roleValue) or tostring(LocalPlayer.Name) == tostring(roleValue)
+end
+
+
 local PARENT = game:GetService("CoreGui")
 --[[local PARENT = swift_internal_correct and game:GetService("CoreGui")
 	or gethui and gethui()
@@ -845,6 +867,13 @@ function OrionV2:MakeWindow(WindowConfig)
 		})
 
 		AddItemTable(Tabs, TabConfig.Name, TabFrame)
+
+		if TabConfig.RequiredRole then
+			if not OrionV2:HasRole(TabConfig.RequiredRole) then
+				return 
+			end
+		end
+
 
 		if GetIcon(TabConfig.Icon) ~= nil then
 			TabFrame.Ico.Image = GetIcon(TabConfig.Icon)
