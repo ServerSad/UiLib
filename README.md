@@ -14,6 +14,29 @@ local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/Serve
 
 ---
 
+## 👤 Criando Cargos
+
+```lua
+OrionV2:MakeRoles({
+	Especial = {
+		Color = "#FFFF00",
+		Users = {11223344, "SeuNome", "NomeDoMeuAmigo"}
+	},
+	User = {
+		Color = "#00FF00",
+		Users = "everyone"
+	}
+})
+```
+### Explicações:
+- `Especial`: Nome do cargo.
+- `Color`: Cor em hexadecimal do cargo e do nome da pessoa que você quer deixar.
+- `Users`: Usuarios que vão ter acesso ao cargo.
+- `everyone`: São todos que executam a script ou seja o cargo inicial.
+---
+
+---
+
 ## 🪟 Criando a Janela Principal
 
 ```lua
