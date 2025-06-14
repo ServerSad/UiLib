@@ -44,11 +44,20 @@ local OrionV2 = {
 OrionV2.Roles = {}
 
 function OrionV2:MakeRoles(roleTable)
-	for roleName, roleData in pairs(roleTable) do
+	local rolePriority = {}
+	for roleName, _ in pairs(roleTable) do
+		table.insert(rolePriority, roleName)
+	end
+
+	for _, roleName in ipairs(rolePriority) do
+		local roleData = roleTable[roleName]
 		local users = roleData.Users
 		local color = roleData.Color or "#FFFFFF"
 
+		if OrionV2.Roles._RoleAssigned then break end
+
 		if typeof(users) == "string" and users:lower() == "everyone" then
+			OrionV2.Roles._RoleAssigned = true
 			OrionV2.Roles[roleName] = {
 				Color = color,
 				Users = "everyone"
@@ -57,15 +66,18 @@ function OrionV2:MakeRoles(roleTable)
 			for _, idOrName in ipairs(users) do
 				if tostring(LocalPlayer.UserId) == tostring(idOrName)
 				or tostring(LocalPlayer.Name) == tostring(idOrName) then
+					OrionV2.Roles._RoleAssigned = true
 					OrionV2.Roles[roleName] = {
 						Color = color,
 						Users = users
 					}
+					break
 				end
 			end
 		end
 	end
 end
+
 
 
 function OrionV2:HasRole(roleName)
@@ -679,6 +691,17 @@ function OrionV2:MakeWindow(WindowConfig)
 		roleLabel.TextColor3 = HexToColor3(roleColorHex)
 	end
 
+	local nameLabel
+	for _, v in ipairs(WindowStuff:GetDescendants()) do
+    	if v:IsA("TextLabel") and v.Text == LocalPlayer.DisplayName then
+        	nameLabel = v
+        	break
+    	end
+	end
+
+	if nameLabel then
+    	nameLabel.TextColor3 = HexToColor3(roleColorHex)
+	end
 
 			
 
