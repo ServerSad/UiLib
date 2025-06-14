@@ -1,243 +1,217 @@
-# 📘 Documentação Completa da OrionV2
+# 📘 Documentação Oficial — OrionV2 UI Library
 
-Este documento ensina como utilizar **todas as funcionalidades da biblioteca OrionV2** em seus scripts.
+Esta documentação ensina como utilizar todas as funcionalidades da biblioteca OrionV2 para criar GUIs completas e organizadas.
 
 ---
 
-## 📦 Colocando a biblioteca
+## 📦 Importando a biblioteca
 
-Primeiro, carregue a biblioteca com:
-
-```lua
 local OrionV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/ServerSad/UiLib/refs/heads/main/Lib/uilib.lua"))()
-```
 
 ---
 
-## 👤 Criando Cargos
+## 👥 Sistema de Cargos (Roles)
 
-```lua
 OrionV2:MakeRoles({
-	Especial = {
-		Color = "#FFFF00",
-		Users = {11223344, "SeuNome", "NomeDoMeuAmigo"}
-	},
-	User = {
-		Color = "#00FF00",
-		Users = "everyone"
-	}
+    Especial = {
+        Color = "#FFFF00",
+        Users = {11223344, "SeuNome", "NomeDoMeuAmigo"}
+    },
+    User = {
+        Color = "#00FF00",
+        Users = "everyone"
+    }
 })
-```
+
 ### Explicações:
-- `Especial`: Nome do cargo.
-- `Color`: Cor em hexadecimal do cargo e do nome da pessoa que você quer deixar.
-- `Users`: Usuarios que vão ter acesso ao cargo.
-- `everyone`: São todos que executam a script ou seja o cargo inicial.
+- NomeDoCargo: Identificador do cargo (ex: "Especial").
+- Color: Cor hexadecimal aplicada no nome do usuário.
+- Users: Lista de IDs ou nomes de usuários que pertencem ao cargo.
+- "everyone": Aplica o cargo a qualquer jogador que usar o script.
 
 ---
 
 ## 🪟 Criando a Janela Principal
 
-```lua
 local Window = OrionV2:MakeWindow({
-	Name = "Título da GUI",
-	SaveConfig = true,
-	ConfigFolder = "NomeDaPasta",
-	IntroText = "Texto de boas-vindas",
-	IntroEnabled = true,
-	ShowIcon = true,
-	Icon = "rbxassetid://IMAGEM",
-	IntroIcon = "rbxassetid://IMAGEM",
-	SearchBar = {
-		Default = "🔍 Procurar...",
-		ClearTextOnFocus = true
-	}
+    Name = "Título da GUI",
+    SaveConfig = true,
+    ConfigFolder = "NomeDaPasta",
+    IntroText = "Texto de boas-vindas",
+    IntroEnabled = true,
+    ShowIcon = true,
+    Icon = "rbxassetid://IMAGEM",
+    IntroIcon = "rbxassetid://IMAGEM",
+    SearchBar = {
+        Default = "🔍 Procurar...",
+        ClearTextOnFocus = true
+    }
 })
-```
 
 ### Explicações:
-- `SaveConfig`: Salva as configurações do usuário.
-- `ConfigFolder`: Nome da pasta onde a config será salva.
-- `SearchBar`: Habilita barra de busca para abas.
-- `ShowIcon`, `Icon`, `IntroIcon`: Exibem ícones na GUI.
+- SaveConfig: Habilita salvamento automático.
+- ConfigFolder: Pasta onde as configurações serão guardadas.
+- IntroEnabled: Mostra uma introdução animada.
+- SearchBar: Ativa campo de busca para abas.
+- Icon / IntroIcon: Ícones da GUI.
 
 ---
 
 ## 🧩 Criando uma Aba (Tab)
 
-```lua
 local Tab = Window:MakeTab({
-	Name = "Minha Aba",
-	Icon = "rbxassetid://4483345998"
+    Name = "Minha Aba",
+    Icon = "rbxassetid://4483345998",
+    RequiredRole = "AllRoles"
 })
-```
+
+### Controle de Acesso com Cargos:
+- RequiredRole: Define quem pode ver a aba.
+- Pode ser:
+    - Uma string: "Admin", "User", etc.
+    - Uma lista: {"Admin", "Mod"}
+    - Ou "AllRoles" para permitir acesso a todos.
 
 ---
 
 ## 🔘 Botão
 
-```lua
 Tab:AddButton({
-	Name = "Clique aqui",
-	Callback = function()
-		print("Botão clicado!")
-	end
+    Name = "Clique aqui",
+    Callback = function()
+        print("Botão clicado!")
+    end
 })
-```
 
 ---
 
-## ✅ Toggle
+## ✅ Toggle (Interruptor)
 
-```lua
 Tab:AddToggle({
-	Name = "Ativar algo",
-	Default = false,
-	Flag = "meuToggle",
-	Save = true,
-	Callback = function(state)
-		print("Toggle:", state)
-	end
+    Name = "Ativar algo",
+    Default = false,
+    Flag = "meuToggle",
+    Save = true,
+    Callback = function(state)
+        print("Toggle:", state)
+    end
 })
-```
 
 ---
 
-## 🎚️ Slider
+## 🎚️ Slider (Deslizante)
 
-```lua
 Tab:AddSlider({
-	Name = "Volume",
-	Min = 0,
-	Max = 100,
-	Default = 50,
-	Increment = 5,
-	ValueName = "%",
-	Flag = "sliderVolume",
-	Save = true,
-	Callback = function(value)
-		print("Volume:", value)
-	end
+    Name = "Volume",
+    Min = 0,
+    Max = 100,
+    Default = 50,
+    Increment = 5,
+    ValueName = "%",
+    Flag = "sliderVolume",
+    Save = true,
+    Callback = function(value)
+        print("Volume:", value)
+    end
 })
-```
 
 ---
 
-## 📦 Dropdown
+## 📦 Dropdown (Lista suspensa)
 
-```lua
 Tab:AddDropdown({
-	Name = "Escolha uma cor",
-	Options = {"Vermelho", "Verde", "Azul"},
-	Default = "Vermelho",
-	Flag = "corSelecionada",
-	Save = true,
-	Callback = function(option)
-		print("Cor escolhida:", option)
-	end
+    Name = "Escolha uma cor",
+    Options = {"Vermelho", "Verde", "Azul"},
+    Default = "Vermelho",
+    Flag = "corSelecionada",
+    Save = true,
+    Callback = function(option)
+        print("Cor escolhida:", option)
+    end
 })
-```
 
 ---
 
-## ⌨️ Bind (tecla de atalho)
+## ⌨️ Bind (Tecla de Atalho)
 
-```lua
 Tab:AddBind({
-	Name = "Tecla rápida",
-	Default = Enum.KeyCode.F,
-	Hold = false,
-	Flag = "teclaRapida",
-	Save = true,
-	Callback = function()
-		print("Tecla pressionada!")
-	end
+    Name = "Tecla rápida",
+    Default = Enum.KeyCode.F,
+    Hold = false,
+    Flag = "teclaRapida",
+    Save = true,
+    Callback = function()
+        print("Tecla pressionada!")
+    end
 })
-```
-
-- `Hold = true`: ativa somente enquanto estiver pressionando a tecla.
+### Obs:
+- Hold = true: Executa somente enquanto a tecla estiver pressionada.
 
 ---
 
-## 📝 Textbox
+## 📝 Textbox (Campo de texto)
 
-```lua
 Tab:AddTextbox({
-	Name = "Digite algo",
-	Default = "",
-	TextDisappear = true,
-	Callback = function(text)
-		print("Você digitou:", text)
-	end
+    Name = "Digite algo",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(text)
+        print("Você digitou:", text)
+    end
 })
-```
 
 ---
 
 ## 🏷️ Label (Texto fixo)
 
-```lua
 Tab:AddLabel("Este é um texto fixo na interface")
-```
 
 ---
 
-## 📄 Parágrafo
+## 📄 Parágrafo (Texto longo)
 
-```lua
-Tab:AddParagraph("Título", "Texto longo explicativo.\nVocê pode usar quebras de linha.")
-```
+Tab:AddParagraph("Título", "Texto explicativo.\nVocê pode usar quebras de linha.")
 
 ---
 
-## 📃 Log (mensagem destacada)
+## 📃 Log (Mensagem em destaque)
 
-```lua
 Tab:AddLog("Sistema iniciado com sucesso.")
-```
 
 ---
 
-## 🔔 Notificação (popup)
+## 🔔 Notificação (Popup)
 
-```lua
 OrionV2:MakeNotification({
-	Name = "Título",
-	Content = "Mensagem de conteúdo",
-	Time = 3
+    Name = "Título",
+    Content = "Mensagem de conteúdo",
+    Time = 3
 })
-```
 
 ---
 
-## 💾 Salvando configurações
+## 💾 Salvando Configurações
 
-Se você ativou `SaveConfig = true`, tudo será salvo automaticamente com:
+Se você definiu SaveConfig = true, basta rodar:
 
-```lua
 OrionV2:Init()
-```
+
+As configurações serão carregadas automaticamente nos próximos usos.
 
 ---
 
-## 🧪 Flags (Para acessar valores)
+## 🧪 Usando Flags (Acesso a valores)
 
-Você pode acessar valores com:
+### Leitura:
 
-```lua
 local valor = OrionV2.Flags["meuToggle"].Value
-```
 
-E pode forçar mudanças com:
+### Alterar manualmente:
 
-```lua
 OrionV2.Flags["sliderVolume"]:Set(75)
-```
 
 ---
 
 ## 💡 Dica Final
 
-Organize elementos em várias abas para GUIs limpas e intuitivas!
-
----
+Organize seus elementos em abas, use permissões para esconder painéis sensíveis e explore as cores para uma UI intuitiva e bonita.
