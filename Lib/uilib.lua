@@ -660,7 +660,7 @@ if WindowConfig.KeySystem then
         end
 
         Button.MouseButton1Click:Connect(checkKey)
-        repeat task.wait() until accepted or not KeyScreen.Parent
+        repeat task.wait() until accepted
     end
 end
 
