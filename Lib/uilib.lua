@@ -718,12 +718,37 @@ if WindowConfig.KeySystem then
             end)
         end
 
-        local CloseBtn = Instance.new("ImageButton", LoadingContainer)
-        CloseBtn.Image = "rbxassetid://106513313642688"
-        CloseBtn.Size = UDim2.new(0, 20, 0, 20)
-        CloseBtn.Position = UDim2.new(1, -30, 0, 190)
-        CloseBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
+	local CloseBtn = Instance.new("TextButton", LoadingContainer)
+	CloseBtn.Text = "X"
+	CloseBtn.Font = Enum.Font.GothamBold  -- Fonte moderna e limpa
+	CloseBtn.TextSize = 16
+	CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Texto branco
+	CloseBtn.Size = UDim2.new(0, 24, 0, 24)  -- Um pouco maior para melhor visibilidade
+	CloseBtn.Position = UDim2.new(1, -32, 0, 16)  -- Posicionado no canto superior direito
+	CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)  -- Vermelho vibrante
+	CloseBtn.AutoButtonColor = false  -- Para manter a cor constante
+
+	-- Efeitos de hover para melhor interatividade
+	CloseBtn.MouseEnter:Connect(function()
+    		CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+	end)
+
+	CloseBtn.MouseLeave:Connect(function()
+    		CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+	end)
+
+	-- Borda arredondada
+	local corner = Instance.new("UICorner", CloseBtn)
+	corner.CornerRadius = UDim.new(0, 6)  -- Cantos levemente arredondados
+
+	-- Efeito de clique
+	CloseBtn.MouseButton1Down:Connect(function()
+    		CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+	end)
+
+	CloseBtn.MouseButton1Up:Connect(function()
+    		CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+	end)
 
         CloseBtn.MouseButton1Click:Connect(function()
             KeyScreen:Destroy()
