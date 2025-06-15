@@ -643,17 +643,17 @@ if WindowConfig.KeySystem then
             end)
         end
 
-        -- Botão de fechar GUI
-        local CloseBtn = Instance.new("ImageButton", Container)
-        CloseBtn.Image = "rbxassetid://7733965118"
-        CloseBtn.Size = UDim2.new(0, 20, 0, 20)
-        CloseBtn.Position = UDim2.new(1, -30, 0, 190)
-        CloseBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
+	local CloseBtn = Instance.new("ImageButton", Container)
+	CloseBtn.Image = "rbxassetid://7734058092"  -- Ícone de "X"
+	CloseBtn.Size = UDim2.new(0, 20, 0, 20)
+	CloseBtn.Position = UDim2.new(1, -30, 0, 16)
+	CloseBtn.BackgroundTransparency = 1
+	CloseBtn.ImageColor3 = Color3.fromRGB(200, 200, 200)
+	Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
 
-        CloseBtn.MouseButton1Click:Connect(function()
-            KeyScreen:Destroy()
-        end)
+	CloseBtn.MouseButton1Click:Connect(function()
+    		KeyScreen:Destroy()  -- Fecha a GUI, mas NÃO define accepted = true
+	end)
 
         local function checkKey()
             local typedKey = Box.Text
