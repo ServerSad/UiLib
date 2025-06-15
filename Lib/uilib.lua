@@ -528,7 +528,63 @@ function ServerUi:Init()
 	end	
 end	
 
+function ServerUi:CheckKeySystem(WindowConfig)
+    if not WindowConfig.KeySystem then return end
+
+    local KeySettings = WindowConfig.KeySettings or {}
+    KeySettings.Title = KeySettings.Title or "Untitled"
+    KeySettings.Subtitle = KeySettings.Subtitle or "Key System"
+    KeySettings.Note = KeySettings.Note or "No method of obtaining the key is provided"
+    KeySettings.FileName = KeySettings.FileName or "Key"
+    KeySettings.SaveKey = (KeySettings.SaveKey ~= false)
+    KeySettings.Key = KeySettings.Key or {"Hello"}
+
+    local function SaveKey(Key)
+        if writefile and KeySettings.SaveKey then
+            writefile(KeySettings.FileName, Key)
+        end
+    end
+
+    local function LoadKey()
+        if readfile and isfile and isfile(KeySettings.FileName) then
+            return readfile(KeySettings.FileName)
+        end
+    end
+
+    local function CheckKey(k)
+        for _, v in ipairs(KeySettings.Key) do
+            if k == v then return true end
+        end
+        return false
+    end
+
+    local valid = false
+    local currentKey = LoadKey()
+
+    if currentKey and CheckKey(currentKey) then
+        valid = true
+    end
+
+    while not valid do
+        local input = tostring(LocalPlayer:Prompt("🔑 " .. KeySettings.Title, KeySettings.Subtitle .. "\n" .. KeySettings.Note))
+        if CheckKey(input) then
+            SaveKey(input)
+            valid = true
+        else
+            ServerUi:MakeNotification({
+                Name = "Chave incorreta",
+                Content = "A chave inserida está incorreta.",
+                Time = 5
+            })
+            task.wait(1)
+        end
+    end
+end
+
+		
 function ServerUi:MakeWindow(WindowConfig)
+	self:CheckKeySystem(WindowConfig)
+
 	local FirstTab = true
 	local Minimized = false
 	local Loaded = false
