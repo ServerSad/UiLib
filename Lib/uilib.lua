@@ -531,7 +531,7 @@ end
 function ServerUi:MakeWindow(WindowConfig)
 	local FirstTab = true
 
--- Key System Popup
+-- Key System Popup com botão de fechar e copiar
 if WindowConfig.KeySystem then
     local ks = WindowConfig.KeySettings or {}
     local accepted = false
@@ -559,13 +559,8 @@ if WindowConfig.KeySystem then
         Container.Size = UDim2.new(0, 360, 0, 240)
         Container.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
         Container.BorderSizePixel = 0
-
-        local UICorner = Instance.new("UICorner", Container)
-        UICorner.CornerRadius = UDim.new(0, 10)
-
-        local UIStroke = Instance.new("UIStroke", Container)
-        UIStroke.Color = Color3.fromRGB(60, 60, 60)
-        UIStroke.Thickness = 1
+        Instance.new("UICorner", Container).CornerRadius = UDim.new(0, 10)
+        Instance.new("UIStroke", Container).Color = Color3.fromRGB(60, 60, 60)
 
         local Title = Instance.new("TextLabel", Container)
         Title.Text = ks.Title or "🔐 Key Required"
@@ -595,8 +590,7 @@ if WindowConfig.KeySystem then
         Box.TextColor3 = Color3.fromRGB(255, 255, 255)
         Box.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
         Box.BorderSizePixel = 0
-        local BoxCorner = Instance.new("UICorner", Box)
-        BoxCorner.CornerRadius = UDim.new(0, 6)
+        Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 6)
 
         local Button = Instance.new("TextButton", Container)
         Button.Text = ks.Button or "Confirmar"
@@ -606,8 +600,7 @@ if WindowConfig.KeySystem then
         Button.TextColor3 = Color3.fromRGB(255, 255, 255)
         Button.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
         Button.BorderSizePixel = 0
-        local BtnCorner = Instance.new("UICorner", Button)
-        BtnCorner.CornerRadius = UDim.new(0, 6)
+        Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
 
         local Note = Instance.new("TextLabel", Container)
         Note.Text = ks.Note or ""
@@ -630,6 +623,38 @@ if WindowConfig.KeySystem then
         Footer.BackgroundTransparency = 1
         Footer.TextXAlignment = Enum.TextXAlignment.Right
 
+        -- Botão de copiar chave para clipboard
+        if ks.KeyButton then
+            local CopyBtn = Instance.new("ImageButton", Container)
+            CopyBtn.Image = "rbxassetid://7733965118"
+            CopyBtn.Size = UDim2.new(0, 20, 0, 20)
+            CopyBtn.Position = UDim2.new(1, -30, 0, 16)
+            CopyBtn.BackgroundTransparency = 1
+            local corner = Instance.new("UICorner", CopyBtn)
+            corner.CornerRadius = UDim.new(1, 0)
+
+            CopyBtn.MouseButton1Click:Connect(function()
+                if setclipboard then
+                    setclipboard(ks.KeyButton)
+                    CopyBtn.ImageColor3 = Color3.fromRGB(0, 255, 0)
+                    task.wait(1)
+                    CopyBtn.ImageColor3 = Color3.new(1, 1, 1)
+                end
+            end)
+        end
+
+        -- Botão de fechar GUI
+        local CloseBtn = Instance.new("ImageButton", Container)
+        CloseBtn.Image = "rbxassetid://7733965118"
+        CloseBtn.Size = UDim2.new(0, 20, 0, 20)
+        CloseBtn.Position = UDim2.new(1, -30, 0, 190)
+        CloseBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
+
+        CloseBtn.MouseButton1Click:Connect(function()
+            KeyScreen:Destroy()
+        end)
+
         local function checkKey()
             local typedKey = Box.Text
             if table.find(ks.Key, typedKey) then
@@ -647,7 +672,7 @@ if WindowConfig.KeySystem then
         end
 
         Button.MouseButton1Click:Connect(checkKey)
-        repeat task.wait() until accepted
+        repeat task.wait() until accepted or not KeyScreen.Parent
     end
 end
 
