@@ -643,18 +643,6 @@ if WindowConfig.KeySystem then
             end)
         end
 
-	local CloseBtn = Instance.new("ImageButton", Container)
-	CloseBtn.Image = "rbxassetid://7734058092"  -- Ícone de "X"
-	CloseBtn.Size = UDim2.new(0, 20, 0, 20)
-	CloseBtn.Position = UDim2.new(1, -30, 0, 16)
-	CloseBtn.BackgroundTransparency = 1
-	CloseBtn.ImageColor3 = Color3.fromRGB(200, 200, 200)
-	Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
-
-	CloseBtn.MouseButton1Click:Connect(function()
-    		KeyScreen:Destroy()  -- Fecha a GUI, mas NÃO define accepted = true
-	end)
-
         local function checkKey()
             local typedKey = Box.Text
             if table.find(ks.Key, typedKey) then
