@@ -546,55 +546,81 @@ function ServerUi:MakeWindow(WindowConfig)
         if not accepted then
             local KeyScreen = Instance.new("ScreenGui", PARENT)
             KeyScreen.Name = "ServerUi_KeySystem"
+            KeyScreen.IgnoreGuiInset = true
+            KeyScreen.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
             local BG = Instance.new("Frame", KeyScreen)
             BG.Size = UDim2.new(1, 0, 1, 0)
-            BG.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            BG.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 
-            local Title = Instance.new("TextLabel", BG)
+            local Container = Instance.new("Frame", BG)
+            Container.AnchorPoint = Vector2.new(0.5, 0.5)
+            Container.Position = UDim2.new(0.5, 0, 0.5, 0)
+            Container.Size = UDim2.new(0, 360, 0, 230)
+            Container.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
+            Container.BorderSizePixel = 0
+
+            local UICorner = Instance.new("UICorner", Container)
+            UICorner.CornerRadius = UDim.new(0, 8)
+
+            local UIStroke = Instance.new("UIStroke", Container)
+            UIStroke.Color = Color3.fromRGB(60, 60, 60)
+            UIStroke.Thickness = 1
+
+            local Title = Instance.new("TextLabel", Container)
             Title.Text = ks.Title or "🔐 Key Required"
             Title.Font = Enum.Font.GothamBold
-            Title.TextSize = 24
-            Title.Size = UDim2.new(0, 300, 0, 50)
-            Title.Position = UDim2.new(0.5, -150, 0.3, 0)
-            Title.TextColor3 = Color3.new(1, 1, 1)
+            Title.TextSize = 20
+            Title.Size = UDim2.new(1, -40, 0, 30)
+            Title.Position = UDim2.new(0, 20, 0, 16)
+            Title.TextColor3 = Color3.fromRGB(240, 240, 240)
             Title.BackgroundTransparency = 1
+            Title.TextXAlignment = Enum.TextXAlignment.Left
 
-            local Subtitle = Instance.new("TextLabel", BG)
-            Subtitle.Text = ks.Subtitle or "Please enter your key"
+            local Subtitle = Instance.new("TextLabel", Container)
+            Subtitle.Text = ks.Subtitle or "Digite sua chave para continuar"
             Subtitle.Font = Enum.Font.Gotham
-            Subtitle.TextSize = 18
-            Subtitle.Size = UDim2.new(0, 300, 0, 30)
-            Subtitle.Position = UDim2.new(0.5, -150, 0.3, 50)
-            Subtitle.TextColor3 = Color3.new(1, 1, 1)
+            Subtitle.TextSize = 15
+            Subtitle.Size = UDim2.new(1, -40, 0, 20)
+            Subtitle.Position = UDim2.new(0, 20, 0, 46)
+            Subtitle.TextColor3 = Color3.fromRGB(150, 150, 150)
             Subtitle.BackgroundTransparency = 1
+            Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
-            local Box = Instance.new("TextBox", BG)
-            Box.PlaceholderText = ks.Textbox or "Insira sua chave aqui..."
-            Box.Size = UDim2.new(0, 300, 0, 35)
-            Box.Position = UDim2.new(0.5, -150, 0.5, 0)
+            local Box = Instance.new("TextBox", Container)
+            Box.PlaceholderText = ks.Textbox or "Insira a chave aqui..."
+            Box.Size = UDim2.new(1, -40, 0, 30)
+            Box.Position = UDim2.new(0, 20, 0, 80)
             Box.Font = Enum.Font.Gotham
-            Box.TextColor3 = Color3.new(1, 1, 1)
-            Box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Box.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             Box.BorderSizePixel = 0
 
-            local Button = Instance.new("TextButton", BG)
+            local BoxCorner = Instance.new("UICorner", Box)
+            BoxCorner.CornerRadius = UDim.new(0, 6)
+
+            local Button = Instance.new("TextButton", Container)
             Button.Text = ks.Button or "Confirmar"
-            Button.Size = UDim2.new(0, 300, 0, 30)
-            Button.Position = UDim2.new(0.5, -150, 0.5, 40)
+            Button.Size = UDim2.new(1, -40, 0, 30)
+            Button.Position = UDim2.new(0, 20, 0, 120)
             Button.Font = Enum.Font.GothamBold
-            Button.TextColor3 = Color3.new(1, 1, 1)
+            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
             Button.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
             Button.BorderSizePixel = 0
 
-            local Note = Instance.new("TextLabel", BG)
+            local BtnCorner = Instance.new("UICorner", Button)
+            BtnCorner.CornerRadius = UDim.new(0, 6)
+
+            local Note = Instance.new("TextLabel", Container)
             Note.Text = ks.Note or ""
             Note.Font = Enum.Font.Gotham
-            Note.TextSize = 14
-            Note.Size = UDim2.new(0, 300, 0, 30)
-            Note.Position = UDim2.new(0.5, -150, 0.5, 80)
+            Note.TextSize = 13
+            Note.Size = UDim2.new(1, -40, 0, 20)
+            Note.Position = UDim2.new(0, 20, 0, 160)
             Note.TextColor3 = Color3.fromRGB(200, 200, 200)
             Note.BackgroundTransparency = 1
+            Note.TextWrapped = true
+            Note.TextXAlignment = Enum.TextXAlignment.Left
 
             local Footer = Instance.new("TextLabel", BG)
             Footer.Text = "ServerUi"
