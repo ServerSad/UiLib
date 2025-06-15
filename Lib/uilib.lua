@@ -531,7 +531,6 @@ end
 function ServerUi:MakeWindow(WindowConfig)
 	local FirstTab = true
 
--- Key System Popup com botão de fechar e copiar
 if WindowConfig.KeySystem then
     local ks = WindowConfig.KeySettings or {}
     local accepted = false
@@ -543,72 +542,102 @@ if WindowConfig.KeySystem then
         end
     end
 
-	if not accepted then
-    	-- Cria a tela principal
-    	local KeyScreen = Instance.new("ScreenGui", PARENT)
-    	KeyScreen.Name = "ServerUi_KeySystem"
-    	KeyScreen.IgnoreGuiInset = true
-    	KeyScreen.ZIndexBehavior = Enum.ZIndexBehavior.Global
+    if not accepted then
+        -- Cria a tela principal
+        local KeyScreen = Instance.new("ScreenGui", PARENT)
+        KeyScreen.Name = "ServerUi_KeySystem"
+        KeyScreen.IgnoreGuiInset = true
+        KeyScreen.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
-    	-- Frame de fundo (transparente)
-    	local Background = Instance.new("Frame", KeyScreen)
-    	Background.Size = UDim2.new(1, 0, 1, 0)
-    	Background.BackgroundTransparency = 1
+        -- Frame de fundo (transparente)
+        local Background = Instance.new("Frame", KeyScreen)
+        Background.Size = UDim2.new(1, 0, 1, 0)
+        Background.BackgroundTransparency = 1
 
-    	-- Container INICIAL (tela de carregamento pequena)
-    	local LoadingContainer = Instance.new("Frame", Background)
-    	LoadingContainer.AnchorPoint = Vector2.new(0.5, 0.5)
-    	LoadingContainer.Position = UDim2.new(0.5, 0, 0.5, 0)
-    	LoadingContainer.Size = UDim2.new(0, 100, 0, 100) -- Tamanho pequeno inicial
-    	LoadingContainer.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
-    	LoadingContainer.BorderSizePixel = 0
-    	Instance.new("UICorner", LoadingContainer).CornerRadius = UDim.new(0, 10)
-    	Instance.new("UIStroke", LoadingContainer).Color = Color3.fromRGB(60, 60, 60)
+        -- Container INICIAL (tela de carregamento pequena)
+        local LoadingContainer = Instance.new("Frame", Background)
+        LoadingContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+        LoadingContainer.Position = UDim2.new(0.5, 0, 0.5, 0)
+        LoadingContainer.Size = UDim2.new(0, 100, 0, 100) -- Tamanho pequeno inicial
+        LoadingContainer.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
+        LoadingContainer.BorderSizePixel = 0
+        Instance.new("UICorner", LoadingContainer).CornerRadius = UDim.new(1, 0) -- Circular inicialmente
+        Instance.new("UIStroke", LoadingContainer).Color = Color3.fromRGB(60, 60, 60)
 
-    	-- Spinner de carregamento (animação)
-    	local Spinner = Instance.new("ImageLabel", LoadingContainer)
-    	Spinner.Image = "rbxassetid://9125473262" -- Ícone de loading (Roblox)
-    	Spinner.Size = UDim2.new(0, 50, 0, 50)
-    	Spinner.Position = UDim2.new(0.5, -25, 0.5, -25)
-    	Spinner.BackgroundTransparency = 1
+        -- Spinner de carregamento (animação)
+        local Spinner = Instance.new("ImageLabel", LoadingContainer)
+        Spinner.Image = "rbxassetid://9125473262" -- Ícone de loading (Roblox)
+        Spinner.Size = UDim2.new(0, 50, 0, 50)
+        Spinner.Position = UDim2.new(0.5, -25, 0.3, -25)
+        Spinner.BackgroundTransparency = 1
 
-    	-- Animação de rotação contínua
-    	local spinConnection
-    	spinConnection = game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
-        	Spinner.Rotation = Spinner.Rotation + (deltaTime * 180) -- Velocidade ajustável
-    	end)
+        -- Animação de rotação contínua
+        local spinConnection
+        spinConnection = game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
+            Spinner.Rotation = Spinner.Rotation + (deltaTime * 180) -- Velocidade ajustável
+        end)
 
-    	-- Texto "Carregando..."
-    	local LoadingText = Instance.new("TextLabel", LoadingContainer)
-    	LoadingText.Text = ks.LoadingTitle or "Carregando..."
-    	LoadingText.Font = Enum.Font.GothamBold
-    	LoadingText.TextSize = 14
-    	LoadingText.Size = UDim2.new(1, 0, 0, 20)
-    	LoadingText.Position = UDim2.new(0, 0, 0.8, 0)
-    	LoadingText.TextColor3 = Color3.fromRGB(240, 240, 240)
-    	LoadingText.BackgroundTransparency = 1
+        -- Textos de loading
+        local LoadingTitle = Instance.new("TextLabel", LoadingContainer)
+        LoadingTitle.Text = ks.LoadingTitle or "Carregando..."
+        LoadingTitle.Font = Enum.Font.GothamBold
+        LoadingTitle.TextSize = 14
+        LoadingTitle.Size = UDim2.new(1, -10, 0, 20)
+        LoadingTitle.Position = UDim2.new(0, 5, 0.6, 0)
+        LoadingTitle.TextColor3 = Color3.fromRGB(240, 240, 240)
+        LoadingTitle.BackgroundTransparency = 1
+        LoadingTitle.TextXAlignment = Enum.TextXAlignment.Center
 
-    	-- Espera 2 segundos (simulando carregamento)
-    	task.wait(2)
+        local LoadingSubtitle = Instance.new("TextLabel", LoadingContainer)
+        LoadingSubtitle.Text = ks.LoadingSubtitle or ks.Author or "Por ServerSadzz"
+        LoadingSubtitle.Font = Enum.Font.Gotham
+        LoadingSubtitle.TextSize = 12
+        LoadingSubtitle.Size = UDim2.new(1, -10, 0, 18)
+        LoadingSubtitle.Position = UDim2.new(0, 5, 0.8, 0)
+        LoadingSubtitle.TextColor3 = Color3.fromRGB(150, 150, 150)
+        LoadingSubtitle.BackgroundTransparency = 1
+        LoadingSubtitle.TextXAlignment = Enum.TextXAlignment.Center
 
-    	-- Remove a animação
-    	spinConnection:Disconnect()
+        -- Espera 2 segundos (simulando carregamento)
+        task.wait(2)
 
-    	-- Expande o container para o tamanho final (com animação)
-    	game:GetService("TweenService"):Create(
-        	LoadingContainer,
-        	TweenInfo.new(0.5, Enum.EasingStyle.Quad),
-        	{ Size = UDim2.new(0, 360, 0, 240) }
-    	):Play()
+        -- Remove a animação
+        spinConnection:Disconnect()
 
-    	-- Aguarda a animação terminar
-    	task.wait(0.5)
+        -- Animação para transformar de círculo para retângulo com bordas arredondadas
+        local tweenService = game:GetService("TweenService")
+        
+        -- Primeiro ajusta o corner radius para 0.1 (quase reto)
+        local cornerTween = tweenService:Create(
+            LoadingContainer:FindFirstChildOfClass("UICorner"),
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+            {CornerRadius = UDim.new(0.1, 0)}
+        )
+        
+        -- Depois expande para o tamanho final
+        local sizeTween = tweenService:Create(
+            LoadingContainer,
+            TweenInfo.new(0.5, Enum.EasingStyle.Quad),
+            {Size = UDim2.new(0, 360, 0, 240)}
+        )
+        
+        cornerTween:Play()
+        task.wait(0.3)
+        sizeTween:Play()
 
-    	-- Remove os elementos de loading e adiciona os campos de key
-    	Spinner:Destroy()
-    	LoadingText:Destroy()
+        -- Aguarda a animação terminar
+        task.wait(0.5)
 
-        local Title = Instance.new("TextLabel", Container)
+        -- Remove os elementos de loading
+        Spinner:Destroy()
+        LoadingTitle:Destroy()
+        LoadingSubtitle:Destroy()
+
+        -- Adiciona o corner radius final
+        Instance.new("UICorner", LoadingContainer).CornerRadius = UDim.new(0, 10)
+
+        -- Agora adicionamos todos os elementos da interface de key
+        local Title = Instance.new("TextLabel", LoadingContainer)
         Title.Text = ks.Title or "🔐 Key Required"
         Title.Font = Enum.Font.GothamBold
         Title.TextSize = 20
@@ -618,7 +647,7 @@ if WindowConfig.KeySystem then
         Title.BackgroundTransparency = 1
         Title.TextXAlignment = Enum.TextXAlignment.Left
 
-        local Subtitle = Instance.new("TextLabel", Container)
+        local Subtitle = Instance.new("TextLabel", LoadingContainer)
         Subtitle.Text = ks.Subtitle or "Digite sua chave para continuar"
         Subtitle.Font = Enum.Font.Gotham
         Subtitle.TextSize = 15
@@ -628,7 +657,7 @@ if WindowConfig.KeySystem then
         Subtitle.BackgroundTransparency = 1
         Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
-        local Box = Instance.new("TextBox", Container)
+        local Box = Instance.new("TextBox", LoadingContainer)
         Box.PlaceholderText = ks.Textbox or "Insira a chave aqui..."
         Box.Size = UDim2.new(1, -40, 0, 30)
         Box.Position = UDim2.new(0, 20, 0, 80)
@@ -638,7 +667,7 @@ if WindowConfig.KeySystem then
         Box.BorderSizePixel = 0
         Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 6)
 
-        local Button = Instance.new("TextButton", Container)
+        local Button = Instance.new("TextButton", LoadingContainer)
         Button.Text = ks.Button or "Confirmar"
         Button.Size = UDim2.new(1, -40, 0, 30)
         Button.Position = UDim2.new(0, 20, 0, 120)
@@ -648,7 +677,7 @@ if WindowConfig.KeySystem then
         Button.BorderSizePixel = 0
         Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
 
-        local Note = Instance.new("TextLabel", Container)
+        local Note = Instance.new("TextLabel", LoadingContainer)
         Note.Text = ks.Note or ""
         Note.Font = Enum.Font.Gotham
         Note.TextSize = 13
@@ -659,8 +688,8 @@ if WindowConfig.KeySystem then
         Note.TextWrapped = true
         Note.TextXAlignment = Enum.TextXAlignment.Left
 
-        local Footer = Instance.new("TextLabel", Container)
-        Footer.Text = "ServerUi"
+        local Footer = Instance.new("TextLabel", LoadingContainer)
+        Footer.Text = ks.Author or "ServerUi"
         Footer.Size = UDim2.new(1, -20, 0, 20)
         Footer.Position = UDim2.new(0, 10, 1, -25)
         Footer.Font = Enum.Font.Gotham
@@ -671,7 +700,7 @@ if WindowConfig.KeySystem then
 
         -- Botão de copiar chave para clipboard
         if ks.KeyButton then
-            local CopyBtn = Instance.new("ImageButton", Container)
+            local CopyBtn = Instance.new("ImageButton", LoadingContainer)
             CopyBtn.Image = "rbxassetid://7733965118"
             CopyBtn.Size = UDim2.new(0, 20, 0, 20)
             CopyBtn.Position = UDim2.new(1, -30, 0, 16)
@@ -689,18 +718,17 @@ if WindowConfig.KeySystem then
             end)
         end
 
-
-	local CloseBtn = Instance.new("ImageButton", Container)
+        local CloseBtn = Instance.new("ImageButton", LoadingContainer)
         CloseBtn.Image = "rbxassetid://106513313642688"
         CloseBtn.Size = UDim2.new(0, 20, 0, 20)
         CloseBtn.Position = UDim2.new(1, -30, 0, 190)
         CloseBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
 
-	CloseBtn.MouseButton1Click:Connect(function()
+        CloseBtn.MouseButton1Click:Connect(function()
             KeyScreen:Destroy()
         end)
-					
+                    
         local function checkKey()
             local typedKey = Box.Text
             if table.find(ks.Key, typedKey) then
