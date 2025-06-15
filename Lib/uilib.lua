@@ -63,7 +63,7 @@ function ServerUi:MakeRoles(roleTable)
 				end
 			end
 		elseif typeof(users) == "string" and users:lower() == "everyone" then
-			if not current then  -- só usa "everyone" se nenhuma anterior foi atribuída
+			if not current then
 				current = {
 					Name = roleName,
 					Color = color
@@ -72,7 +72,6 @@ function ServerUi:MakeRoles(roleTable)
 		end
 	end
 
-	-- Armazena a role ativa e também seu nome para comparação
 	ServerUi.CurrentRole = current or {Name = "User", Color = "#FFFFFF"}
 end
 
@@ -543,41 +542,35 @@ if WindowConfig.KeySystem then
     end
 
     if not accepted then
-        -- Cria a tela principal
         local KeyScreen = Instance.new("ScreenGui", PARENT)
         KeyScreen.Name = "ServerUi_KeySystem"
         KeyScreen.IgnoreGuiInset = true
         KeyScreen.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
-        -- Frame de fundo (transparente)
         local Background = Instance.new("Frame", KeyScreen)
         Background.Size = UDim2.new(1, 0, 1, 0)
         Background.BackgroundTransparency = 1
 
-        -- Container INICIAL (tela de carregamento pequena)
         local LoadingContainer = Instance.new("Frame", Background)
         LoadingContainer.AnchorPoint = Vector2.new(0.5, 0.5)
         LoadingContainer.Position = UDim2.new(0.5, 0, 0.5, 0)
-        LoadingContainer.Size = UDim2.new(0, 100, 0, 100) -- Tamanho pequeno inicial
+        LoadingContainer.Size = UDim2.new(0, 100, 0, 100) 
         LoadingContainer.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
         LoadingContainer.BorderSizePixel = 0
-        Instance.new("UICorner", LoadingContainer).CornerRadius = UDim.new(1, 0) -- Circular inicialmente
+        Instance.new("UICorner", LoadingContainer).CornerRadius = UDim.new(1, 0)
         Instance.new("UIStroke", LoadingContainer).Color = Color3.fromRGB(60, 60, 60)
 
-        -- Spinner de carregamento (animação)
         local Spinner = Instance.new("ImageLabel", LoadingContainer)
         Spinner.Image = "rbxassetid://9125473262" -- Ícone de loading (Roblox)
         Spinner.Size = UDim2.new(0, 50, 0, 50)
         Spinner.Position = UDim2.new(0.5, -25, 0.3, -25)
         Spinner.BackgroundTransparency = 1
 
-        -- Animação de rotação contínua
         local spinConnection
         spinConnection = game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
-            Spinner.Rotation = Spinner.Rotation + (deltaTime * 180) -- Velocidade ajustável
+            Spinner.Rotation = Spinner.Rotation + (deltaTime * 180)
         end)
 
-        -- Textos de loading
         local LoadingTitle = Instance.new("TextLabel", LoadingContainer)
         LoadingTitle.Text = ks.LoadingTitle or "Carregando..."
         LoadingTitle.Font = Enum.Font.GothamBold
@@ -598,23 +591,18 @@ if WindowConfig.KeySystem then
         LoadingSubtitle.BackgroundTransparency = 1
         LoadingSubtitle.TextXAlignment = Enum.TextXAlignment.Center
 
-        -- Espera 2 segundos (simulando carregamento)
         task.wait(2)
 
-        -- Remove a animação
         spinConnection:Disconnect()
 
-        -- Animação para transformar de círculo para retângulo com bordas arredondadas
         local tweenService = game:GetService("TweenService")
         
-        -- Primeiro ajusta o corner radius para 0.1 (quase reto)
         local cornerTween = tweenService:Create(
             LoadingContainer:FindFirstChildOfClass("UICorner"),
             TweenInfo.new(0.3, Enum.EasingStyle.Quad),
             {CornerRadius = UDim.new(0.1, 0)}
         )
         
-        -- Depois expande para o tamanho final
         local sizeTween = tweenService:Create(
             LoadingContainer,
             TweenInfo.new(0.5, Enum.EasingStyle.Quad),
@@ -625,18 +613,14 @@ if WindowConfig.KeySystem then
         task.wait(0.3)
         sizeTween:Play()
 
-        -- Aguarda a animação terminar
         task.wait(0.5)
 
-        -- Remove os elementos de loading
         Spinner:Destroy()
         LoadingTitle:Destroy()
         LoadingSubtitle:Destroy()
 
-        -- Adiciona o corner radius final
         Instance.new("UICorner", LoadingContainer).CornerRadius = UDim.new(0, 10)
 
-        -- Agora adicionamos todos os elementos da interface de key
         local Title = Instance.new("TextLabel", LoadingContainer)
         Title.Text = ks.Title or "🔐 Key Required"
         Title.Font = Enum.Font.GothamBold
@@ -699,7 +683,6 @@ if WindowConfig.KeySystem then
         Footer.BackgroundTransparency = 1
         Footer.TextXAlignment = Enum.TextXAlignment.Right
 
-        -- Botão de copiar chave para clipboard
         if ks.KeyButton then
             local CopyBtn = Instance.new("ImageButton", LoadingContainer)
             CopyBtn.Image = "rbxassetid://7733965118"
@@ -721,15 +704,14 @@ if WindowConfig.KeySystem then
 
 	local CloseBtn = Instance.new("TextButton", LoadingContainer)
 	CloseBtn.Text = "X"
-	CloseBtn.Font = Enum.Font.GothamBold  -- Fonte moderna e limpa
+	CloseBtn.Font = Enum.Font.GothamBold 
 	CloseBtn.TextSize = 16
-	CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Texto branco
-	CloseBtn.Size = UDim2.new(0, 20, 0, 20)  -- Um pouco maior para melhor visibilidade
-	CloseBtn.Position = UDim2.new(1, -30, 0, 190)  -- Posicionado no canto superior direito
-	CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)  -- Vermelho vibrante
-	CloseBtn.AutoButtonColor = false  -- Para manter a cor constante
+	CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	CloseBtn.Size = UDim2.new(0, 20, 0, 20)
+	CloseBtn.Position = UDim2.new(1, -30, 0, 190)
+	CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+	CloseBtn.AutoButtonColor = false
 
-	-- Efeitos de hover para melhor interatividade
 	CloseBtn.MouseEnter:Connect(function()
     		CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 	end)
@@ -738,11 +720,10 @@ if WindowConfig.KeySystem then
     		CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
 	end)
 
-	-- Borda arredondada
 	local corner = Instance.new("UICorner", CloseBtn)
-	corner.CornerRadius = UDim.new(0, 6)  -- Cantos levemente arredondados
+	corner.CornerRadius = UDim.new(0, 6) 
 
-	-- Efeito de clique
+	
 	CloseBtn.MouseButton1Down:Connect(function()
     		CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
 	end)
@@ -949,7 +930,7 @@ end
 
 			
 
-	-- @ SearchBar (Zv-yz/github);
+	
 	local Tabs = {};
 
 	if WindowConfig.SearchBar then
@@ -1048,7 +1029,7 @@ end
 
 	MakeDraggable(DragPoint, MainWindow)
 
-	-- @ UI Visible & Mobile Icon Handle (Zv-yz/github);
+	
 	local _currentKey = Enum.KeyCode.RightShift;
 	local isMobile = table.find({ Enum.Platform.IOS, Enum.Platform.Android }, UserInputService:GetPlatform());
 	local MobileIcon = SetChildren(SetProps(MakeElement("ImageButton", "http://www.roblox.com/asset/?id=17570737246"), {
@@ -1086,7 +1067,7 @@ end
 
 	AddConnection(UserInputService.InputBegan, function(Input)
 		if Input.KeyCode == _currentKey then
-			MobileIcon.Visible = false; -- Ja que ele usou Teclado, creio que precisa esconder icone de mobile. 
+			MobileIcon.Visible = false;
 			MainWindow.Visible = not MainWindow.Visible;
 		end
 	end)
@@ -1397,7 +1378,7 @@ end
 					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(ServerUi.Themes[ServerUi.SelectedTheme].Second.R * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.G * 255 + 6, ServerUi.Themes[ServerUi.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
-				--@ Favorite System
+				
 				if FavoriteButton then
 					AddConnection(FavoriteButton.MouseButton1Down, function()
 						ServerUi.FavoriteEvent:Fire(ButtonConfig.OriginalName)
@@ -1789,7 +1770,6 @@ end
 				}), "Second")
 
 				AddConnection(BindBox.Value:GetPropertyChangedSignal("Text"), function()
-					--BindBox.Size = UDim2.new(0, BindBox.Value.TextBounds.X + 16, 0, 24)
 					TweenService:Create(BindBox, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, BindBox.Value.TextBounds.X + 16, 0, 24)}):Play()
 				end)
 
@@ -1915,7 +1895,6 @@ end
 				}), "Second")
 
 				AddConnection(TextboxActual:GetPropertyChangedSignal("Text"), function()
-					--TextContainer.Size = UDim2.new(0, TextboxActual.TextBounds.X + 16, 0, 24)
 					TweenService:Create(TextContainer, TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, TextboxActual.TextBounds.X + 16, 0, 24)}):Play()
 				end)
 
