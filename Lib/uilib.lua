@@ -724,8 +724,8 @@ if WindowConfig.KeySystem then
 	CloseBtn.Font = Enum.Font.GothamBold  -- Fonte moderna e limpa
 	CloseBtn.TextSize = 16
 	CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Texto branco
-	CloseBtn.Size = UDim2.new(0, 24, 0, 24)  -- Um pouco maior para melhor visibilidade
-	CloseBtn.Position = UDim2.new(1, -32, 0, 16)  -- Posicionado no canto superior direito
+	CloseBtn.Size = UDim2.new(0, 20, 0, 20)  -- Um pouco maior para melhor visibilidade
+	CloseBtn.Position = UDim2.new(1, -30, 0, 190)  -- Posicionado no canto superior direito
 	CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)  -- Vermelho vibrante
 	CloseBtn.AutoButtonColor = false  -- Para manter a cor constante
 
