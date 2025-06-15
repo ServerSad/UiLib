@@ -658,6 +658,7 @@ if WindowConfig.KeySystem then
         Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
         local Box = Instance.new("TextBox", LoadingContainer)
+	Box.Text = ""
         Box.PlaceholderText = ks.Textbox or "Insira a chave aqui..."
         Box.Size = UDim2.new(1, -40, 0, 30)
         Box.Position = UDim2.new(0, 20, 0, 80)
