@@ -645,7 +645,7 @@ if WindowConfig.KeySystem then
 
 
 	local CloseBtn = Instance.new("ImageButton", Container)
-        CloseBtn.Image = "rbxassetid://110006792553199"
+        CloseBtn.Image = "rbxassetid://106513313642688"
         CloseBtn.Size = UDim2.new(0, 20, 0, 20)
         CloseBtn.Position = UDim2.new(1, -30, 0, 190)
         CloseBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
