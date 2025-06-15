@@ -528,64 +528,103 @@ function ServerUi:Init()
 	end	
 end	
 
-function ServerUi:CheckKeySystem(WindowConfig)
-    if not WindowConfig.KeySystem then return end
-
-    local KeySettings = WindowConfig.KeySettings or {}
-    KeySettings.Title = KeySettings.Title or "Untitled"
-    KeySettings.Subtitle = KeySettings.Subtitle or "Key System"
-    KeySettings.Note = KeySettings.Note or "No method of obtaining the key is provided"
-    KeySettings.FileName = KeySettings.FileName or "Key"
-    KeySettings.SaveKey = (KeySettings.SaveKey ~= false)
-    KeySettings.Key = KeySettings.Key or {"Hello"}
-
-    local function SaveKey(Key)
-        if writefile and KeySettings.SaveKey then
-            writefile(KeySettings.FileName, Key)
-        end
-    end
-
-    local function LoadKey()
-        if readfile and isfile and isfile(KeySettings.FileName) then
-            return readfile(KeySettings.FileName)
-        end
-    end
-
-    local function CheckKey(k)
-        for _, v in ipairs(KeySettings.Key) do
-            if k == v then return true end
-        end
-        return false
-    end
-
-    local valid = false
-    local currentKey = LoadKey()
-
-    if currentKey and CheckKey(currentKey) then
-        valid = true
-    end
-
-    while not valid do
-        local input = tostring(LocalPlayer:Prompt("🔑 " .. KeySettings.Title, KeySettings.Subtitle .. "\n" .. KeySettings.Note))
-        if CheckKey(input) then
-            SaveKey(input)
-            valid = true
-        else
-            ServerUi:MakeNotification({
-                Name = "Chave incorreta",
-                Content = "A chave inserida está incorreta.",
-                Time = 5
-            })
-            task.wait(1)
-        end
-    end
-end
-
-		
 function ServerUi:MakeWindow(WindowConfig)
-	self:CheckKeySystem(WindowConfig)
-
 	local FirstTab = true
+
+    -- Key System
+    if WindowConfig.KeySystem then
+        local ks = WindowConfig.KeySettings or {}
+        local accepted = false
+
+        if ks.SaveKey and isfile and readfile and isfile(ks.FileName) then
+            local keyFromFile = readfile(ks.FileName)
+            if table.find(ks.Key, keyFromFile) then
+                accepted = true
+            end
+        end
+
+        if not accepted then
+            local KeyScreen = Instance.new("ScreenGui", PARENT)
+            KeyScreen.Name = "ServerUi_KeySystem"
+
+            local BG = Instance.new("Frame", KeyScreen)
+            BG.Size = UDim2.new(1, 0, 1, 0)
+            BG.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+
+            local Title = Instance.new("TextLabel", BG)
+            Title.Text = ks.Title or "🔐 Key Required"
+            Title.Font = Enum.Font.GothamBold
+            Title.TextSize = 24
+            Title.Size = UDim2.new(0, 300, 0, 50)
+            Title.Position = UDim2.new(0.5, -150, 0.3, 0)
+            Title.TextColor3 = Color3.new(1, 1, 1)
+            Title.BackgroundTransparency = 1
+
+            local Subtitle = Instance.new("TextLabel", BG)
+            Subtitle.Text = ks.Subtitle or "Please enter your key"
+            Subtitle.Font = Enum.Font.Gotham
+            Subtitle.TextSize = 18
+            Subtitle.Size = UDim2.new(0, 300, 0, 30)
+            Subtitle.Position = UDim2.new(0.5, -150, 0.3, 50)
+            Subtitle.TextColor3 = Color3.new(1, 1, 1)
+            Subtitle.BackgroundTransparency = 1
+
+            local Box = Instance.new("TextBox", BG)
+            Box.PlaceholderText = ks.Textbox or "Insira sua chave aqui..."
+            Box.Size = UDim2.new(0, 300, 0, 35)
+            Box.Position = UDim2.new(0.5, -150, 0.5, 0)
+            Box.Font = Enum.Font.Gotham
+            Box.TextColor3 = Color3.new(1, 1, 1)
+            Box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            Box.BorderSizePixel = 0
+
+            local Button = Instance.new("TextButton", BG)
+            Button.Text = ks.Button or "Confirmar"
+            Button.Size = UDim2.new(0, 300, 0, 30)
+            Button.Position = UDim2.new(0.5, -150, 0.5, 40)
+            Button.Font = Enum.Font.GothamBold
+            Button.TextColor3 = Color3.new(1, 1, 1)
+            Button.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+            Button.BorderSizePixel = 0
+
+            local Note = Instance.new("TextLabel", BG)
+            Note.Text = ks.Note or ""
+            Note.Font = Enum.Font.Gotham
+            Note.TextSize = 14
+            Note.Size = UDim2.new(0, 300, 0, 30)
+            Note.Position = UDim2.new(0.5, -150, 0.5, 80)
+            Note.TextColor3 = Color3.fromRGB(200, 200, 200)
+            Note.BackgroundTransparency = 1
+
+            local Footer = Instance.new("TextLabel", BG)
+            Footer.Text = "ServerUi"
+            Footer.Size = UDim2.new(0, 100, 0, 20)
+            Footer.Position = UDim2.new(1, -105, 1, -25)
+            Footer.Font = Enum.Font.Gotham
+            Footer.TextSize = 12
+            Footer.TextColor3 = Color3.fromRGB(90, 90, 90)
+            Footer.BackgroundTransparency = 1
+
+            local function checkKey()
+                local typedKey = Box.Text
+                if table.find(ks.Key, typedKey) then
+                    if ks.SaveKey and writefile then
+                        writefile(ks.FileName, typedKey)
+                    end
+                    KeyScreen:Destroy()
+                    accepted = true
+                else
+                    Box.Text = ""
+                    Button.Text = "Chave inválida!"
+                    task.wait(1.5)
+                    Button.Text = ks.Button or "Confirmar"
+                end
+            end
+
+            Button.MouseButton1Click:Connect(checkKey)
+            repeat task.wait() until accepted
+        end
+    end
 	local Minimized = false
 	local Loaded = false
 	local UIHidden = false
