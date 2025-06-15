@@ -543,24 +543,70 @@ if WindowConfig.KeySystem then
         end
     end
 
-    if not accepted then
-        local KeyScreen = Instance.new("ScreenGui", PARENT)
-        KeyScreen.Name = "ServerUi_KeySystem"
-        KeyScreen.IgnoreGuiInset = true
-        KeyScreen.ZIndexBehavior = Enum.ZIndexBehavior.Global
+	if not accepted then
+    	-- Cria a tela principal
+    	local KeyScreen = Instance.new("ScreenGui", PARENT)
+    	KeyScreen.Name = "ServerUi_KeySystem"
+    	KeyScreen.IgnoreGuiInset = true
+    	KeyScreen.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
-        local Background = Instance.new("Frame", KeyScreen)
-        Background.Size = UDim2.new(1, 0, 1, 0)
-        Background.BackgroundTransparency = 1
+    	-- Frame de fundo (transparente)
+    	local Background = Instance.new("Frame", KeyScreen)
+    	Background.Size = UDim2.new(1, 0, 1, 0)
+    	Background.BackgroundTransparency = 1
 
-        local Container = Instance.new("Frame", Background)
-        Container.AnchorPoint = Vector2.new(0.5, 0.5)
-        Container.Position = UDim2.new(0.5, 0, 0.5, 0)
-        Container.Size = UDim2.new(0, 360, 0, 240)
-        Container.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
-        Container.BorderSizePixel = 0
-        Instance.new("UICorner", Container).CornerRadius = UDim.new(0, 10)
-        Instance.new("UIStroke", Container).Color = Color3.fromRGB(60, 60, 60)
+    	-- Container INICIAL (tela de carregamento pequena)
+    	local LoadingContainer = Instance.new("Frame", Background)
+    	LoadingContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+    	LoadingContainer.Position = UDim2.new(0.5, 0, 0.5, 0)
+    	LoadingContainer.Size = UDim2.new(0, 100, 0, 100) -- Tamanho pequeno inicial
+    	LoadingContainer.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
+    	LoadingContainer.BorderSizePixel = 0
+    	Instance.new("UICorner", LoadingContainer).CornerRadius = UDim.new(0, 10)
+    	Instance.new("UIStroke", LoadingContainer).Color = Color3.fromRGB(60, 60, 60)
+
+    	-- Spinner de carregamento (animação)
+    	local Spinner = Instance.new("ImageLabel", LoadingContainer)
+    	Spinner.Image = "rbxassetid://9125473262" -- Ícone de loading (Roblox)
+    	Spinner.Size = UDim2.new(0, 50, 0, 50)
+    	Spinner.Position = UDim2.new(0.5, -25, 0.5, -25)
+    	Spinner.BackgroundTransparency = 1
+
+    	-- Animação de rotação contínua
+    	local spinConnection
+    	spinConnection = game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
+        	Spinner.Rotation = Spinner.Rotation + (deltaTime * 180) -- Velocidade ajustável
+    	end)
+
+    	-- Texto "Carregando..."
+    	local LoadingText = Instance.new("TextLabel", LoadingContainer)
+    	LoadingText.Text = ks.LoadingTitle or "Carregando..."
+    	LoadingText.Font = Enum.Font.GothamBold
+    	LoadingText.TextSize = 14
+    	LoadingText.Size = UDim2.new(1, 0, 0, 20)
+    	LoadingText.Position = UDim2.new(0, 0, 0.8, 0)
+    	LoadingText.TextColor3 = Color3.fromRGB(240, 240, 240)
+    	LoadingText.BackgroundTransparency = 1
+
+    	-- Espera 2 segundos (simulando carregamento)
+    	task.wait(2)
+
+    	-- Remove a animação
+    	spinConnection:Disconnect()
+
+    	-- Expande o container para o tamanho final (com animação)
+    	game:GetService("TweenService"):Create(
+        	LoadingContainer,
+        	TweenInfo.new(0.5, Enum.EasingStyle.Quad),
+        	{ Size = UDim2.new(0, 360, 0, 240) }
+    	):Play()
+
+    	-- Aguarda a animação terminar
+    	task.wait(0.5)
+
+    	-- Remove os elementos de loading e adiciona os campos de key
+    	Spinner:Destroy()
+    	LoadingText:Destroy()
 
         local Title = Instance.new("TextLabel", Container)
         Title.Text = ks.Title or "🔐 Key Required"
