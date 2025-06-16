@@ -1674,22 +1674,16 @@ end
 
 				function Dropdown:Refresh(Options, Delete)
 					if Delete then
-						for _, v in pairs(Dropdown.Buttons) do
-							if v.Instance then
-								v.Instance:Destroy()
-							end
-						end
-						for _, child in ipairs(self.Container:GetChildren()) do
-							if child:IsA("TextButton") then
-								child:Destroy()
-							end
-						end
+						for _,v in pairs(Dropdown.Buttons) do
+							v:Destroy()
+						end    
 						table.clear(Dropdown.Options)
 						table.clear(Dropdown.Buttons)
 					end
-						Dropdown.Options = Options
-						AddOptions(Dropdown.Options)
-				end
+					Dropdown.Options = Options
+					AddOptions(Dropdown.Options)
+				end  
+
 
 
 				function Dropdown:Set(Value)
