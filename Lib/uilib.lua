@@ -1674,9 +1674,11 @@ end
 
 				function Dropdown:Refresh(Options, Delete)
 					if Delete then
-						for _,v in pairs(Dropdown.Buttons) do
-							v:Destroy()
-						end    
+						for _, v in pairs(Dropdown.Buttons) do
+							if v.Instance then
+								v.Instance:Destroy()
+							end
+						end
 						table.clear(Dropdown.Options)
 						table.clear(Dropdown.Buttons)
 					end
