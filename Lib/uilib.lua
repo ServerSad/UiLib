@@ -1058,8 +1058,8 @@ end
 		end
 
 		ServerUi:MakeNotification({
-			Name = "Interface fechada",
-			Content = (isMobile and 'Clique na <b>Icon' or 'Pressione a tecla <b>' .. _currentKey.Name) .. "</b> para abrir a GUI novamente!",
+			Name = "UI Closed.",
+			Content = (isMobile and 'Click on <b>Icon' or 'Press the key <b>' .. _currentKey.Name) .. "</b> to open the GUI again!",
 			Time = 5
 		})
 		WindowConfig.CloseCallback()
