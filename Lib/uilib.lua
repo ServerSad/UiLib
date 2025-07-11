@@ -454,7 +454,7 @@ function ServerUi:MakeNotification(NotificationConfig)
 	spawn(function()
 		NotificationConfig.Name = NotificationConfig.Name or "Notification"
 		NotificationConfig.Content = NotificationConfig.Content or "Test"
-		NotificationConfig.Image = NotificationConfig.Image or "rbxassetid://106082034097799"
+		NotificationConfig.Image = NotificationConfig.Image or "rbxassetid://131558270235010"
 		NotificationConfig.Time = NotificationConfig.Time or 15
 
 		local NotificationParent = SetProps(MakeElement("TFrame"), {
@@ -773,8 +773,8 @@ end
 	WindowConfig.IntroText = WindowConfig.IntroText or "Leaks/Scripts Hub"
 	WindowConfig.CloseCallback = WindowConfig.CloseCallback or function() end
 	WindowConfig.ShowIcon = WindowConfig.ShowIcon or false
-	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://106082034097799"
-	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://106082034097799"
+	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://131558270235010"
+	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://131558270235010"
 	WindowConfig.SearchBar = WindowConfig.SearchBar or nil
 	ServerUi.Folder = WindowConfig.ConfigFolder
 	ServerUi.SaveCfg = WindowConfig.SaveConfig
@@ -1033,7 +1033,7 @@ end
 	local _currentKey = Enum.KeyCode.RightShift;
 	local isMobile = table.find({ Enum.Platform.IOS, Enum.Platform.Android }, UserInputService:GetPlatform());
 	local MobileIcon = SetChildren(SetProps(MakeElement("ImageButton", {
-		Image = "rbxassetid://106082034097799",
+		Image = "rbxassetid://131558270235010",
 		Position = UDim2.new(0.25, 0, 0.1, 0),
 		Size = UDim2.new(0, 32, 0, 33),
 		Draggable = true,
@@ -1319,7 +1319,7 @@ end
 				ButtonConfig = ButtonConfig or {}
 				ButtonConfig.Name = ButtonConfig.Name or "Button"
 				ButtonConfig.Callback = ButtonConfig.Callback or function() end
-				ButtonConfig.Icon = ButtonConfig.Icon or "rbxassetid://106082034097799"
+				ButtonConfig.Icon = ButtonConfig.Icon or "rbxassetid://131558270235010"
 				ButtonConfig.OriginalName = ButtonConfig.OriginalName or tostring(ButtonConfig.Name or "")
 
 				local Splitted = string.split(ButtonConfig.Name, " / ")
