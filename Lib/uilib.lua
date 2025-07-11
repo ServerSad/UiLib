@@ -534,20 +534,21 @@ if WindowConfig.KeySystem then
     local ks = WindowConfig.KeySettings or {}
     local accepted = false
     local remoteKeys = {}
+    local HttpService = game:GetService("HttpService")
 
-    if ks.Getfromsite then
+    if ks.Getfromsite == true and ks.GetfromsiteURL then
         pcall(function()
-            local response = game:HttpGet(ks.Getfromsite)
+            local response = game:HttpGet(ks.GetfromsiteURL)
             for key in string.gmatch(response, "[^\r\n]+") do
                 table.insert(remoteKeys, key)
             end
         end)
     end
 
-    if ks.UseServerKey and ks.ServerKey and #remoteKeys == 0 then
+    if ks.UseServerKey == true and ks.ServerKey and #remoteKeys == 0 then
         pcall(function()
             local response = game:HttpGet("https://serverkey.discloud.app/api/getkeys?token=" .. ks.ServerKey)
-            local data = game:GetService("HttpService"):JSONDecode(response)
+            local data = HttpService:JSONDecode(response)
             if typeof(data) == "table" then
                 for _, key in pairs(data) do
                     table.insert(remoteKeys, key)
@@ -568,10 +569,23 @@ if WindowConfig.KeySystem then
     if ks.SaveKey and isfile and readfile and isfile(ks.FileName) then
         local keyFromFile = readfile(ks.FileName)
         if table.find(ks.Key, keyFromFile) then
-            accepted = true
+            if ks.ServerKeyName then
+                local url = "https://serverkey.discloud.app/api/" .. ks.ServerKeyName .. "/verifykey?key=" .. keyFromFile
+                local success, response = pcall(function()
+                    return game:HttpGet(url)
+                end)
+                if success then
+                    local result = HttpService:JSONDecode(response)
+                    if result.valid then
+                        accepted = true
+                    end
+                end
+            else
+                accepted = true
+            end
         end
     end
-
+				
     if not accepted then
         local KeyScreen = Instance.new("ScreenGui", PARENT)
         KeyScreen.Name = "ServerUi_KeySystem"
@@ -767,21 +781,46 @@ if WindowConfig.KeySystem then
             KeyScreen:Destroy()
         end)
                     
-        local function checkKey()
-            local typedKey = Box.Text
-            if table.find(ks.Key, typedKey) then
-                if ks.SaveKey and writefile then
-                    writefile(ks.FileName, typedKey)
+local function checkKey()
+    local typedKey = Box.Text
+
+    if table.find(ks.Key, typedKey) then
+        if ks.ServerKeyName then
+            local category = ks.ServerKeyName
+            local url = "https://serverkey.discloud.app/api/" .. category .. "/verifykey?key=" .. typedKey
+            local success, response = pcall(function()
+                return game:HttpGet(url)
+            end)
+            if success then
+                local data = HttpService:JSONDecode(response)
+                if not data.valid then
+                    Box.Text = ""
+                    Button.Text = "Key Rejected!"
+                    task.wait(1.5)
+                    Button.Text = ks.Button or "Confirm"
+                    return
                 end
-                KeyScreen:Destroy()
-                accepted = true
             else
                 Box.Text = ""
-                Button.Text = "Chave inválida!"
+                Button.Text = "Error"
                 task.wait(1.5)
-                Button.Text = ks.Button or "Confirmar"
+                Button.Text = ks.Button or "Confirm"
+                return
             end
         end
+
+        if ks.SaveKey and writefile then
+            writefile(ks.FileName, typedKey)
+        end
+        KeyScreen:Destroy()
+        accepted = true
+    else
+        Box.Text = ""
+        Button.Text = "Invalid key!"
+        task.wait(1.5)
+        Button.Text = ks.Button or "Confirm"
+    end
+end
 
         Button.MouseButton1Click:Connect(checkKey)
         repeat task.wait() until accepted
