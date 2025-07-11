@@ -1032,17 +1032,15 @@ end
 	
 	local _currentKey = Enum.KeyCode.RightShift;
 	local isMobile = table.find({ Enum.Platform.IOS, Enum.Platform.Android }, UserInputService:GetPlatform());
-	local MobileIcon = SetChildren(SetProps(MakeElement("ImageButton", {
-		Image = "rbxassetid://131558270235010",
+	local MobileIcon = SetChildren(SetProps(MakeElement("ImageButton", "rbxassetid://106082034097799"), {
 		Position = UDim2.new(0.25, 0, 0.1, 0),
 		Size = UDim2.new(0, 32, 0, 33),
 		Draggable = true,
 		Parent = Orion,
 		Visible = false,
-	}), {}), {
+	}), {
 		MakeElement("Corner", 1, 0)
 	})
-
 
 	MakeDraggable(MobileIcon, MobileIcon)
 
