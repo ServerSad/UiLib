@@ -762,7 +762,7 @@ end
 	local UIHidden = false
 
 	WindowConfig = WindowConfig or {}
-	WindowConfig.Name = WindowConfig.Name or "Leaks/Scripts Hub"
+	WindowConfig.Name = WindowConfig.Name or "ServerUi"
 	WindowConfig.ConfigFolder = WindowConfig.ConfigFolder or WindowConfig.Name
 	WindowConfig.SaveConfig = WindowConfig.SaveConfig or false
 
@@ -770,7 +770,7 @@ end
 		WindowConfig.IntroEnabled = true
 	end
 
-	WindowConfig.IntroText = WindowConfig.IntroText or "Leaks/Scripts Hub"
+	WindowConfig.IntroText = WindowConfig.IntroText or "ServerUi"
 	WindowConfig.CloseCallback = WindowConfig.CloseCallback or function() end
 	WindowConfig.ShowIcon = WindowConfig.ShowIcon or false
 	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://131558270235010"
@@ -1317,7 +1317,7 @@ end
 				ButtonConfig = ButtonConfig or {}
 				ButtonConfig.Name = ButtonConfig.Name or "Button"
 				ButtonConfig.Callback = ButtonConfig.Callback or function() end
-				ButtonConfig.Icon = ButtonConfig.Icon or "rbxassetid://131558270235010"
+				ButtonConfig.Icon = ButtonConfig.Icon or "rbxassetid://7734053039"
 				ButtonConfig.OriginalName = ButtonConfig.OriginalName or tostring(ButtonConfig.Name or "")
 
 				local Splitted = string.split(ButtonConfig.Name, " / ")
