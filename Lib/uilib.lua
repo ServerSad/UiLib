@@ -533,6 +533,37 @@ function ServerUi:MakeWindow(WindowConfig)
 if WindowConfig.KeySystem then
     local ks = WindowConfig.KeySettings or {}
     local accepted = false
+    local remoteKeys = {}
+
+    if ks.Getfromsite then
+        pcall(function()
+            local response = game:HttpGet(ks.Getfromsite)
+            for key in string.gmatch(response, "[^\r\n]+") do
+                table.insert(remoteKeys, key)
+            end
+        end)
+    end
+
+    if ks.UseServerKey and ks.ServerKey and #remoteKeys == 0 then
+        pcall(function()
+            local response = game:HttpGet("https://serverkey.discloud.app/api/getkeys?token=" .. ks.ServerKey)
+            local data = game:GetService("HttpService"):JSONDecode(response)
+            if typeof(data) == "table" then
+                for _, key in pairs(data) do
+                    table.insert(remoteKeys, key)
+                end
+            end
+        end)
+    end
+
+    if #remoteKeys == 0 and ks.ServerKeyPadrao then
+        table.insert(remoteKeys, ks.ServerKeyPadrao)
+    end
+
+    ks.Key = typeof(ks.Key) == "table" and ks.Key or {}
+    for _, k in ipairs(remoteKeys) do
+        table.insert(ks.Key, k)
+    end
 
     if ks.SaveKey and isfile and readfile and isfile(ks.FileName) then
         local keyFromFile = readfile(ks.FileName)
