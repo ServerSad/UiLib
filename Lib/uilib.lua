@@ -570,7 +570,7 @@ if WindowConfig.KeySystem then
         local keyFromFile = readfile(ks.FileName)
         if table.find(ks.Key, keyFromFile) then
             if ks.ServerKeyName then
-                local url = "https://serverkey.discloud.app/api/" .. ks.ServerKeyName .. "/verifykey?key=" .. keyFromFile
+                local url = "https://serverkey.discloud.app/api/" .. ks.ServerKeyName .. "/verifykey?key=" .. keyFromFile .. "&user=" .. LocalPlayer.Name
                 local success, response = pcall(function()
                     return game:HttpGet(url)
                 end)
