@@ -576,6 +576,12 @@ if WindowConfig.KeySystem then
                 end)
                 if success then
                     local result = HttpService:JSONDecode(response)
+
+                -- Verifica se está na blacklist
+                if result.message and string.lower(result.message) == "blacklisted." then
+                                       LocalPlayer:Kick("Blacklisted.")
+                    return
+                end
                     if result.valid then
                         accepted = true
                     end
