@@ -800,12 +800,16 @@ local function checkKey()
             if success then
                 local data = HttpService:JSONDecode(response)
                 if not data.valid then
-                    Box.Text = ""
-                    Button.Text = "Key Rejected!"
-                    task.wait(1.5)
-                    Button.Text = ks.Button or "Confirm"
-                    return
-                end
+                 if data.message and string.lower(data.message) == "blacklisted." then
+              LocalPlayer:Kick("Você foi bloqueado. Motivo: Blacklisted.")
+               return
+            end
+               Box.Text = ""
+               Button.Text = "Key Rejected!"
+               task.wait(1.5)
+               Button.Text = ks.Button or "Confirm"
+               return
+            end
             else
                 Box.Text = ""
                 Button.Text = "Error"
