@@ -793,7 +793,7 @@ local function checkKey()
     if table.find(ks.Key, typedKey) then
         if ks.ServerKeyName then
             local category = ks.ServerKeyName
-            local url = "https://serverkey.discloud.app/api/" .. category .. "/verifykey?key=" .. typedKey
+            local url = "https://serverkey.discloud.app/api/" .. category .. "/verifykey?key=" .. typedKey .. "&user=" .. LocalPlayer.Name
             local success, response = pcall(function()
                 return game:HttpGet(url)
             end)
@@ -801,7 +801,7 @@ local function checkKey()
                 local data = HttpService:JSONDecode(response)
                 if not data.valid then
                  if data.message and string.lower(data.message) == "blacklisted." then
-              LocalPlayer:Kick("Você foi bloqueado. Motivo: Blacklisted.")
+              LocalPlayer:Kick("Blacklisted.")
                return
             end
                Box.Text = ""
